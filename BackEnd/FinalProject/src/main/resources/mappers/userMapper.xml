@@ -12,10 +12,9 @@
   	</select>
   	
   	<insert id="registUser" parameterType="User">
-  		INSERT INTO users (userId, password, username, nickname, regDate)
+  		INSERT INTO users (userId, password, userName, nickName, regDate)
   		VALUES (#{userId}, md5(#{password}), #{userName}, #{nickName}, now())
   	</insert>
-  	
   	
   	<select id="checkUser" parameterType="Map">
   		SELECT COUNT(*) FROM users
@@ -24,6 +23,6 @@
   	
   	<select id="selectUserByNick" parameterType="String" resultType="User">
   		SELECT * FROM users
-  		WHERE nickname=#{nickName}
+  		WHERE nickName=#{nickName}
   	</select>
   </mapper>

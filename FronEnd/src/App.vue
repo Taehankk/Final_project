@@ -1,9 +1,16 @@
-<script setup>
-import { RouterLink, RouterView } from "vue-router";
-</script>
-
 <template>
-  <RouterView />
+  <div>
+    <TheHeaderNav/>
+    <RouterView/>
+  </div>
 </template>
 
-<style scoped></style>
+<script setup>
+import TheHeaderNav from './components/common/TheHeaderNav.vue';
+import { RouterView } from 'vue-router';
+
+</script>
+
+<style scoped>
+
+</style>

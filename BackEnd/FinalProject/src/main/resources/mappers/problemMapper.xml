@@ -53,8 +53,15 @@
 	</select>
 
 	<insert id="save" parameterType="UserData">
-		INSERT INTO userdata (id, nickname, username, score, date)
-		VALUES (#{userId}, #{nickName}, #{userName}, #{score}, solveDate)
+		INSERT INTO userdata (userId,
+		nickName, userName, score, solveDate)
+		VALUES (#{userId}, #{nickName},
+		#{userName}, #{score}, now())
 	</insert>
 
+	<select id="selectScoreAll" parameterType="OrderCondition"
+		resultType="UserData">
+		SELECT * FROM userdata
+		ORDER BY ${orderSt} ${orderByDir};
+	</select>
 </mapper>

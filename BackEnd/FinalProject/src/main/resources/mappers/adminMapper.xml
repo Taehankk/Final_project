@@ -6,6 +6,12 @@
   <!-- namespace에 DAO 풀package명 작성 -->
   <mapper namespace="com.project.exercise.dao.AdminDao">
   	<!-- SQL문 아래 작성 -->
+  	<select id="selectUsers" resultType="User">
+  		SELECT * FROM users;
+  	</select>
   	
-  	
+  	<delete id="deleteUser" parameterType="String">
+  		DELETE FROM users
+  		WHERE userId=#{userId};
+  	</delete>
   </mapper>

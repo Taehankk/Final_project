@@ -12,8 +12,11 @@
     "axios": "^1.6.8",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",
+    "vue-modal-dialogs": "^3.0.0",
     "vue-router": "^4.3.0",
-    "vuetify": "^3.6.6"
+    "vue3-modal": "^0.1.6",
+    "vuetify": "^3.6.6",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",

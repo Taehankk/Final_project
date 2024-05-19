@@ -1,8 +1,5 @@
 package com.project.exercise.controller;
 
-<<<<<<< HEAD
-public class ProblemController {
-=======
 import java.util.Date;
 import java.util.List;
 
@@ -10,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.exercise.dto.OrderCondition;
 import com.project.exercise.dto.Problem;
 import com.project.exercise.dto.User;
 import com.project.exercise.dto.UserData;
@@ -43,7 +42,7 @@ public class ProblemController {
 	}
 
 	// 문제 랜덤 추출
-	@GetMapping("/problem")
+	@GetMapping("/problem/list")
 	@Operation(summary = "문제 추출", description = "카테고리별로 문제 랜덤 추출")
 	public ResponseEntity<?> listUp() {
 		try {
@@ -52,7 +51,6 @@ public class ProblemController {
 			if (list == null || list.isEmpty()) {
 				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 			}
-
 			return new ResponseEntity<List<Problem>>(list, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<String>("문제 추출 중에 오류가 발생했습니다: " + e.getMessage(),
@@ -61,7 +59,7 @@ public class ProblemController {
 	}
 
 	// 문제의 정답 확인
-	@PostMapping("/check")
+	@PostMapping("/problem/check")
 	@Operation(summary = "정답 확인", description = "입력받은 정답과 실제 정답 일치 여부 확인")
 	public ResponseEntity<Boolean> checkAnswer(@RequestParam int index, @RequestParam String answer) {
 		try {
@@ -78,14 +76,14 @@ public class ProblemController {
 	}
 
 	// 정답 갯수 반환
-	@GetMapping("/correctCount")
+	@GetMapping("/problem/correctCount")
 	@Operation(summary = "정답 갯수 반환", description = "사용자가 맞춘 정답의 총 갯수 반환")
 	public ResponseEntity<Integer> getCorrectCount() {
 		return ResponseEntity.ok(correctCount);
 	}
 
 	// 최종 점수 반환
-	@GetMapping("/finalScore")
+	@GetMapping("/problem/finalScore")
 	@Operation(summary = "최종 점수 반환", description = "사용자의 최종 점수 반환")
 	public ResponseEntity<Integer> getFinalScore() {
 		// 사용자의 최종 점수를 계산하고 반환하는 로직을 구현합니다.
@@ -103,11 +101,10 @@ public class ProblemController {
 	}
 
 	// 최종 결과 저장
-	@PostMapping("save")
+	@PostMapping("/problem/save")
 	@Operation(summary = "결과 저장", description = "현재까지의 결과를 저장")
-	public ResponseEntity<UserData> save(HttpSession session) {
+	public ResponseEntity<UserData> save(HttpSession session, @RequestParam int score) {
 		try {
-			
 			User user = userService.getUser(session.getAttribute("nickName").toString());
 			System.out.println("session : " + user);
 			if (user == null) {
@@ -116,13 +113,19 @@ public class ProblemController {
 
 			Date now = new Date();
 			UserData savedata = new UserData(user.getUserId(), user.getNickName(), user.getUserName(),
-					calculateFinalScore(), now);
-			
+					score, now);
+			System.out.println(savedata);
 			problemService.saveUserData(savedata);
 			return new ResponseEntity<>(savedata, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
->>>>>>> 9a93f5d34de44f4463336aca623b423f53e7a7c7
+	
+	@GetMapping("/problem/rank")
+	public ResponseEntity<List<UserData>> scoreListUp(@ModelAttribute OrderCondition orderCondition){
+	    System.out.println(orderCondition);
+	    List<UserData> list = problemService.scoreListUp(orderCondition);
+	    return new ResponseEntity<List<UserData>>(list, HttpStatus.OK);
+	}
 }

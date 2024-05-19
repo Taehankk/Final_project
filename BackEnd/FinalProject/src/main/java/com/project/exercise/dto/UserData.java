@@ -2,14 +2,18 @@ package com.project.exercise.dto;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class UserData {
 	private String userId;
 	private String nickName;
 	private String userName;
 	private int score;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date solveDate;
 
 	public UserData() {
+		
 	}
 
 	public UserData(String userId, String nickName, String userName, int score, Date solveDate) {

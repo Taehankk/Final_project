@@ -2,6 +2,7 @@ package com.project.exercise.dao;
 
 import java.util.List;
 
+import com.project.exercise.dto.OrderCondition;
 import com.project.exercise.dto.Problem;
 import com.project.exercise.dto.UserData;
 
@@ -19,4 +20,6 @@ public interface ProblemDao {
 	public List<Problem> selectPerson();
 
 	public void save(UserData userData);
+	
+	public List<UserData> selectScoreAll(OrderCondition orderCondition);
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.exercise.dao.ProblemDao;
+import com.project.exercise.dto.OrderCondition;
 import com.project.exercise.dto.Problem;
 import com.project.exercise.dto.UserData;
 
@@ -40,6 +41,11 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     public void saveUserData(UserData userData) {
         problemDao.save(userData);
+    }
+    
+    @Override
+    public List<UserData> scoreListUp(OrderCondition orderCondition) {
+        return problemDao.selectScoreAll(orderCondition);
     }
 
 }
