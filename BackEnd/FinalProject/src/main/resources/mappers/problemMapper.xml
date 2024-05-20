@@ -59,9 +59,11 @@
 		#{userName}, #{score}, now())
 	</insert>
 
-	<select id="selectScoreAll" parameterType="OrderCondition"
-		resultType="UserData">
+	<select id="selectSearchList" parameterType="SearchCondition" resultType="UserData">
 		SELECT * FROM userdata
+		<if test="searchItem != 'none'">
+		WHERE ${searchItem} = #{searchValue}
+		</if>
 		ORDER BY ${orderSt} ${orderByDir};
 	</select>
 </mapper>

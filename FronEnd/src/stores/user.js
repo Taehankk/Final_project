@@ -8,7 +8,9 @@ export const useUserStore = defineStore("user", () => {
   const router = useRouter();
 
   const duplcheck = ref(false);
-  const user = ref(sessionStorage.getItem("user"))
+  const user = ref(sessionStorage.getItem("user"));
+
+  const boolPass = ref(true);
 
   const loginUser = function (loginData) {
     axios
@@ -17,28 +19,31 @@ export const useUserStore = defineStore("user", () => {
         const nickName = response.data;
         sessionStorage.setItem("user", nickName);
         user.value = nickName;
-        router.push({name: "home"});
+        router.push({ name: "home" });
       })
       .catch(() => {
         alert("로그인 정보를 확인하세요");
       });
   };
 
-  const logout = function() {
+  const logout = function () {
     sessionStorage.removeItem("user");
     user.value = null;
-    router.push({name: "home"});
-  }
 
-  const boolPass = ref(false);
-  const checkPass = function(password) {
-    let regPass = /^(?=.*[a-zA-Z0-9!@#$%^*]).{8,25}$/;
-    if(!regPass.test(password)){
-      boolPass.value = true;
-    }else {
+    axios.get(`${REST_USER_API}/logout`).then(() => {
+      alert("로그아웃 되었습니다.");
+      router.push({ name: "home" });
+    });
+  };
+
+  const checkPass = function (password) {
+    let regPass = /^[a-zA-Z0-9!@#$%^*]{8,20}$/;
+    if (!regPass.test(password)) {
       boolPass.value = false;
+    } else {
+      boolPass.value = true;
     }
-  }
+  };
 
   const registUser = function (registData) {
     axios.post(`${REST_USER_API}/regist`, registData).then((response) => {
@@ -47,7 +52,7 @@ export const useUserStore = defineStore("user", () => {
     });
   };
 
-  const checkParam = async (name, value) => {    
+  const checkParam = async (name, value) => {
     await axios
       .get(`${REST_USER_API}/check?name=${name}&value=${value}`)
       .then((response) => {
@@ -57,7 +62,22 @@ export const useUserStore = defineStore("user", () => {
       .catch(() => {
         duplcheck.value = false;
         alert("중복입니다");
-      });    
+      });
   };
-  return { user, loginUser, logout, boolPass, checkPass, registUser, checkParam, duplcheck };
+
+  const initPass = function () {
+    boolPass.value = true;
+  };
+
+  return {
+    user,
+    loginUser,
+    logout,
+    boolPass,
+    checkPass,
+    registUser,
+    checkParam,
+    duplcheck,
+    initPass,
+  };
 });

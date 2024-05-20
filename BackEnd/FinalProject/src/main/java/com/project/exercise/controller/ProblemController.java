@@ -9,12 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.exercise.dto.OrderCondition;
 import com.project.exercise.dto.Problem;
+import com.project.exercise.dto.SearchCondition;
 import com.project.exercise.dto.User;
 import com.project.exercise.dto.UserData;
 import com.project.exercise.service.ProblemService;
@@ -103,8 +104,9 @@ public class ProblemController {
 	// 최종 결과 저장
 	@PostMapping("/problem/save")
 	@Operation(summary = "결과 저장", description = "현재까지의 결과를 저장")
-	public ResponseEntity<UserData> save(HttpSession session, @RequestParam int score) {
+	public ResponseEntity<UserData> save(HttpSession session, @RequestParam("score") int score) {
 		try {
+			System.out.println(session.getAttribute("nickName"));
 			User user = userService.getUser(session.getAttribute("nickName").toString());
 			System.out.println("session : " + user);
 			if (user == null) {
@@ -122,10 +124,9 @@ public class ProblemController {
 		}
 	}
 	
-	@GetMapping("/problem/rank")
-	public ResponseEntity<List<UserData>> scoreListUp(@ModelAttribute OrderCondition orderCondition){
-	    System.out.println(orderCondition);
-	    List<UserData> list = problemService.scoreListUp(orderCondition);
-	    return new ResponseEntity<List<UserData>>(list, HttpStatus.OK);
+	@GetMapping("/problem/search")
+	public ResponseEntity<List<UserData>> searchList(@ModelAttribute SearchCondition searchCondition){
+		List<UserData> list = problemService.searchList(searchCondition);
+		return new ResponseEntity<List<UserData>>(list, HttpStatus.OK);
 	}
 }

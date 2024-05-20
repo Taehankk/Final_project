@@ -2,8 +2,8 @@ package com.project.exercise.dao;
 
 import java.util.List;
 
-import com.project.exercise.dto.OrderCondition;
 import com.project.exercise.dto.Problem;
+import com.project.exercise.dto.SearchCondition;
 import com.project.exercise.dto.UserData;
 
 public interface ProblemDao {
@@ -21,5 +21,5 @@ public interface ProblemDao {
 
 	public void save(UserData userData);
 	
-	public List<UserData> selectScoreAll(OrderCondition orderCondition);
+	public List<UserData> selectSearchList(SearchCondition searchCondition);
 }

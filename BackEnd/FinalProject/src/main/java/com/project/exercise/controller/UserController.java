@@ -40,6 +40,13 @@ public class UserController {
 		return new ResponseEntity<String>("FAIL", HttpStatus.NOT_ACCEPTABLE);
 	}
 	
+	@GetMapping("/user/logout")
+    public ResponseEntity<Boolean> logout(HttpSession session){
+        session.invalidate();
+        System.out.println("logout");
+        return new ResponseEntity<Boolean>(true, HttpStatus.ACCEPTED);
+    }
+	
 	@PostMapping("/user/regist")
 	public ResponseEntity<User> signUp(@RequestBody User user){
 		userService.registUser(user);

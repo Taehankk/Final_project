@@ -3,11 +3,11 @@
     <fieldset>
       <div>
         <label for="id">ID</label>
-        <input type="text" id="id" v-model="loginData.userId" />
+        <input type="text" id="id" v-model="loginData.userId" @keyup.enter="login"/>
       </div>
       <div>
         <label for="password">PW</label>
-        <input type="password" id="password" v-model="loginData.password" />
+        <input type="password" id="password" v-model="loginData.password" @keyup.enter="login"/>
         
       </div>
       <div>
