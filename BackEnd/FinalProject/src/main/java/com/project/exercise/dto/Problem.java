@@ -45,12 +45,16 @@ public class Problem {
 	}
 
 	public void setProblemAnswer(String problemAnswer) {
-		this.problemAnswer = problemAnswer;
+		if (problemAnswer != null && problemAnswer.endsWith(".0")) {
+			this.problemAnswer = problemAnswer.substring(0, problemAnswer.length() - 2);
+		} else {
+			this.problemAnswer = problemAnswer;
+		}
 	}
 
 	@Override
 	public String toString() {
 		return "Problem [problemId=" + problemId + ", problemName=" + problemName + ", problemAnswer=" + problemAnswer
-				+ ", category=" + category;
+				+ ", category=" + category + "]";
 	}
 }

@@ -18,6 +18,7 @@ CREATE SCHEMA IF NOT EXISTS project_show DEFAULT CHARACTER SET utf8mb3 ;
 
 USE project_show ;
 
+
 -- Table project_show.country
 
 CREATE TABLE IF NOT EXISTS project_show.country (

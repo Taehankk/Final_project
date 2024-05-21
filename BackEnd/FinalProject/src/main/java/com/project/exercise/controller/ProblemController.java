@@ -23,7 +23,6 @@ import com.project.exercise.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/ansmoon")
@@ -46,9 +45,9 @@ public class ProblemController {
 	@GetMapping("/problem/list")
 	@Operation(summary = "문제 추출", description = "카테고리별로 문제 랜덤 추출")
 	public ResponseEntity<?> listUp() {
+
 		try {
 			list = problemService.getListAll();
-
 			if (list == null || list.isEmpty()) {
 				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 			}
@@ -62,7 +61,8 @@ public class ProblemController {
 	// 문제의 정답 확인
 	@PostMapping("/problem/check")
 	@Operation(summary = "정답 확인", description = "입력받은 정답과 실제 정답 일치 여부 확인")
-	public ResponseEntity<Boolean> checkAnswer(@RequestParam int index, @RequestParam String answer) {
+	public ResponseEntity<Boolean> checkAnswer(@RequestParam("index") int index, @RequestParam("answer") String answer) {
+		System.out.println(list);
 		try {
 			boolean isCorrect = answer.equals(list.get(index).getProblemAnswer());
 
@@ -101,28 +101,25 @@ public class ProblemController {
 		return totalScore;
 	}
 
-	// 최종 결과 저장
-	@PostMapping("/problem/save")
-	@Operation(summary = "결과 저장", description = "현재까지의 결과를 저장")
-	public ResponseEntity<UserData> save(HttpSession session, @RequestParam("score") int score) {
-		try {
-			System.out.println(session.getAttribute("nickName"));
-			User user = userService.getUser(session.getAttribute("nickName").toString());
-			System.out.println("session : " + user);
-			if (user == null) {
-				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-			}
+    // 최종 결과 저장
+    @PostMapping("/problem/save")
+    @Operation(summary = "결과 저장", description = "현재까지의 결과를 저장")
+    public ResponseEntity<UserData> save(@RequestParam("nickName") String nickName, @RequestParam("score") int score) {
+        try {
+            User user = userService.getUser(nickName);
+            if (user == null) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
 
-			Date now = new Date();
-			UserData savedata = new UserData(user.getUserId(), user.getNickName(), user.getUserName(),
-					score, now);
-			System.out.println(savedata);
-			problemService.saveUserData(savedata);
-			return new ResponseEntity<>(savedata, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+            Date now = new Date();
+            UserData savedata = new UserData(user.getUserId(), user.getNickName(), user.getUserName(),
+                    score, now);
+            problemService.saveUserData(savedata);
+            return new ResponseEntity<>(savedata, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 	
 	@GetMapping("/problem/search")
 	public ResponseEntity<List<UserData>> searchList(@ModelAttribute SearchCondition searchCondition){

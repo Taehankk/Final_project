@@ -34,9 +34,11 @@
 		LIMIT 2;
 	</select>
 
-	<select id="selectNumber" resultType="Problem">
+	<select id="selectNumber"
+		resultType="com.project.exercise.dto.Problem">
 		SELECT id AS problemId,
-		question AS problemName, answer AS problemAnswer,
+		question AS problemName,
+		CAST(answer AS CHAR) AS problemAnswer,
 		'number' AS category
 		FROM number
 		ORDER BY RAND()
@@ -59,10 +61,11 @@
 		#{userName}, #{score}, now())
 	</insert>
 
-	<select id="selectSearchList" parameterType="SearchCondition" resultType="UserData">
+	<select id="selectSearchList" parameterType="SearchCondition"
+		resultType="UserData">
 		SELECT * FROM userdata
 		<if test="searchItem != 'none'">
-		WHERE ${searchItem} = #{searchValue}
+			WHERE ${searchItem} = #{searchValue}
 		</if>
 		ORDER BY ${orderSt} ${orderByDir};
 	</select>

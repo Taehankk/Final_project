@@ -1,7 +1,9 @@
 <template>
   <div class="game-container">
     <template v-if="currentProblem">
-      <h1>문제 {{ currentIndex + 1 }} - {{ currentProblem.problemName }}</h1>
+      <h1>
+        문제 {{ store.currentIndex + 1 }} - {{ currentProblem.problemName }}
+      </h1>
 
       <!-- 이미지 표시 부분 -->
       <img
@@ -10,8 +12,9 @@
         v-if="currentProblemImageUrl"
       />
 
+      <!-- Hint Button -->
       <div class="hint">
-        <button @click="getHint">Hint</button>
+        <button @click="getHint" v-if="hintBool">Hint</button>
         <div>
           {{ store.hint }}
         </div>
@@ -20,28 +23,31 @@
       <div class="answer-input">
         <input
           ref="userAnswerInput"
-          v-model="userAnswer"
+          :value="userAnswer"
           type="text"
           placeholder="정답을 입력하세요"
+          @input="updateUserAnswer"
           @keyup.enter="checkAnswer"
         />
         <button @click="checkAnswer">제출</button>
       </div>
 
       <!-- 현재 문제와 최종 문제 상태 -->
-      <div class="problem-status" v-if="!showModal">
-        <p>진행도: {{ currentIndex + 1 }} / {{ store.problems.length }}</p>
+      <div class="problem-status" v-if="!store.isModalOpen">
+        <p>
+          진행도: {{ store.currentIndex + 1 }} / {{ store.problems.length }}
+        </p>
       </div>
 
       <!-- 현재 맞힌 갯수와 점수 표시 -->
-      <div class="result-info" v-if="!showModal">
+      <div class="result-info" v-if="!store.isModalOpen">
         <p>현재 맞힌 문제 수: {{ store.correctAnswers }}</p>
         <p>현재 점수: {{ store.finalScore }}</p>
       </div>
 
       <!-- 시간과 시간 표시 바 -->
-      <div class="timer" v-if="!showModal">
-        <p>남은 시간: {{ timeLeft }}초</p>
+      <div class="timer" v-if="!store.isModalOpen">
+        <p>남은 시간: {{ store.timeLeft }}초</p>
         <div class="timebar-container">
           <transition name="timebar-transition">
             <div class="timebar" :style="{ width: timeBarWidth }"></div>
@@ -50,7 +56,7 @@
       </div>
     </template>
 
-    <div class="modal" v-if="showModal">
+    <div class="modal" v-if="store.isModalOpen">
       <div class="modal-content">
         <span class="close" @click="closeModal">&times;</span>
         <h2>게임 결과</h2>
@@ -68,17 +74,18 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, onUnmounted } from "vue";
+import { ref, computed, onMounted, watch, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { useGameStore } from "@/stores/game";
-import axios from "axios";
 
 const store = useGameStore();
 const router = useRouter();
-const currentIndex = ref(0);
 const userAnswer = ref("");
-const userAnswerInput = ref(""); // 입력 필드를 참조하는 ref
-const currentProblem = computed(() => store.problems[currentIndex.value]);
+const userAnswerInput = ref(null); // 입력 필드를 참조하는 ref
+
+const currentProblem = computed(() => store.problems[store.currentIndex]);
+const hintCnt = ref(0);
+const hintBool = ref(true);
 
 const currentProblemImageUrl = computed(() => {
   if (currentProblem.value && currentProblem.value.image) {
@@ -86,163 +93,105 @@ const currentProblemImageUrl = computed(() => {
   }
 });
 
-let timerInterval = null;
-let timeLeft = ref(0); // 제한 시간 설정
-const timeBarWidth = computed(() => `${(timeLeft.value / 10) * 100}%`);
+const timeBarWidth = computed(() => `${(store.timeLeft / 10) * 100}%`);
 
-const resetAndIncrementIndex = () => {
-  // 타이머 초기화
-  resetTimer();
-  // 현재 인덱스 증가
-  currentIndex.value++;
-};
-
-const nextProblem = async () => {
-  // 입력한 답 초기화
-  await clearUserAnswer();
-
-  // 타이머 초기화와 인덱스 증가
-  resetAndIncrementIndex();
-
-  // 입력 필드에 포커스 설정
-  userAnswerInput.value.focus();
-  store.hint = '';
-};
-
-const clearUserAnswer = () => {
-  userAnswer.value = "";
+const updateUserAnswer = (event) => {
+  userAnswer.value = event.target.value;
 };
 
 const checkAnswer = async () => {
-  if (currentProblem.value && userAnswer.value.trim() !== "") {
-    const problemAnswer = currentProblem.value.problemAnswer;
-    const userAnswerLowerCase = userAnswer.value;
-    if (userAnswerLowerCase === problemAnswer) {
+  if (userAnswer.value.trim() !== "") {
+    const isCorrect = await store.checkAnswer(userAnswer.value.trim());
+    if (isCorrect) {
       alert("정답입니다!");
-      store.incrementCorrectAnswers();
-      store.updateFinalScore();
-      nextProblem();
-    } else {
-      alert(`틀렸습니다! 정답은 ${problemAnswer}입니다.`);
-      store.incrementWrongAnswers();
-      nextProblem();
-      console.log(problemAnswer);
+    } else if (!isCorrect) {
+      alert(`틀렸습니다! 정답은 ${currentProblem.value.problemAnswer}입니다.`);
     }
+    userAnswer.value = "";
+    userAnswerInput.value.focus();
+    store.nextProblem();
   } else {
     alert("정답을 입력하세요!");
+    userAnswerInput.value.focus();
   }
 };
 
-const startTimer = () => {
-  // 현재 페이지가 "home" 페이지가 아닌 경우에만 타이머를 시작합니다.
-  if (router.currentRoute.value.name !== "home" && !timerInterval) {
-    timeLeft.value = 10; // 초기화된 시간 설정 부분
-    timerInterval = setInterval(() => {
-      if (timeLeft.value > 0) {
-        timeLeft.value--;
-      } else {
-        clearInterval(timerInterval);
-        // 시간 초과 시에는 입력 필드를 감춥니다.
-        const inputElement = userAnswerInput.value;
-        inputElement.style.display = "none";
-        // 일정 시간이 지난 후에 다음 문제로 넘어갑니다.
-        setTimeout(async () => {
-          // 입력 필드를 다시 표시합니다.
-          inputElement.style.display = "block";
-          // 입력값을 초기화합니다
-          nextProblem();
-          alert(
-            `시간초과! 정답은 ${currentProblem.value.problemAnswer}입니다.`
-          );
-        }, 100);
-      }
-    }, 1000);
+const getHint = async () => {
+  if (!sessionStorage.getItem("hintCheck")) {
+    sessionStorage.setItem("hintCheck", true);
+    hintCnt.value++;
+    console.log(hintCnt.value);
+    if (hintCnt.value >= 2) {
+      hintBool.value = false;
+    }
+    await store.getHint(currentIndex.value);
+    console.log("hint out");
   }
+};
+
+const closeModalWithoutSaving = () => {
+  store.isModalOpen = false;
+  router.push({ name: "home" });
+};
+
+const saveResult = async () => {
+  await store.saveResult();
+  store.isModalOpen = false;
+  router.push({ name: "home" });
 };
 
 router.afterEach((to) => {
   if (to.name === "home") {
-    clearInterval(timerInterval);
+    clearInterval(timer);
     store.correctAnswers = 0;
     store.wrongAnswers = 0;
     store.finalScore = 0;
   }
 });
 
-const resetTimer = () => {
-  clearInterval(timerInterval);
-  timerInterval = null; // 타이머가 중복으로 돌아가는 것을 방지하기 위해 null로 설정
-  startTimer();
-};
-
-const showModal = ref(false);
-
-const closeModal = () => {
-  showModal.value = false;
-  router.push({ name: "home" });
-};
-
-const closeModalWithoutSaving = () => {
-  showModal.value = false;
-  router.push({ name: "home" });
-};
-
-axios.defaults.withCredentials = true;
-
-const saveResult = async () => {
-  try {
-    const response = await axios.post(
-      "http://localhost:8080/ansmoon/problem/save",
-      null, // 요청 본문을 null로 설정
-      {
-        params: {
-          score: store.finalScore, // 쿼리 파라미터로 score 전달
-        },
-        withCredentials: true, // 세션 정보를 함께 전송
-      }
-    );
-
-    if (response.status === 200) {
-      alert("결과가 성공적으로 저장되었습니다!");
-      showModal.value = false;
-      router.push({ name: "home" });
-    } else {
-      alert("결과 저장에 실패했습니다. 다시 시도해주세요.");
-    }
-  } catch (error) {
-    console.error("결과 저장 중 오류 발생:", error);
-    alert("결과 저장 중 오류가 발생했습니다. 다시 시도해주세요.");
-  }
-};
-
-watch(
-  () => currentIndex.value,
-  (newValue) => {
-    if (newValue === store.problems.length) {
-      showModal.value = true;
-      clearInterval(timerInterval);
-    }
-  }
-);
-
-const getHint = async () => {
-  await store.getHint(currentIndex.value);
-  console.log("hint out");
-};
-
 onMounted(() => {
   store.fetchProblems();
-  startTimer();
+  store.resetGame();
+
   setTimeout(() => {
     userAnswerInput.value.focus();
-  }, 100);
+  }, 20);
+
+  let timer = null; // 타이머 변수를 전역으로 선언합니다.
+
+  const startTimer = () => {
+    timer = setInterval(() => {
+      if (store.timeLeft > 0) {
+        store.timeLeft--;
+      } else {
+        alert(`시간초과! 정답은 ${currentProblem.value.problemAnswer}입니다.`);
+        store.nextProblem();
+        userAnswer.value = "";
+        userAnswerInput.value.focus();
+      }
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    clearInterval(timer); // 타이머를 정지합니다.
+  };
+
+  // 문제를 모두 푼 경우에만 타이머를 시작합니다.
+  watch(
+    () => store.currentIndex,
+    (newIndex, oldIndex) => {
+      if (newIndex !== oldIndex && newIndex === store.problems.length) {
+        stopTimer(); // 모든 문제를 푼 경우 타이머를 정지합니다.
+      }
+    }
+  );
+
+  startTimer(); // 타이머를 시작합니다.
+
+  onBeforeUnmount(() => {
+    stopTimer(); // 컴포넌트가 소멸될 때 타이머를 정지합니다.
+  });
 });
-// watch(userAnswer, (newValue, oldValue) => {
-//   if (newValue !== oldValue && newValue !== '') {
-//     // 입력 값이 변경되고 비어 있지 않은 경우에만 초기화
-//     userAnswer.value = ''; // 입력란 초기화
-//   }
-// });
 </script>
 
 <style scoped>

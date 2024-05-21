@@ -11,7 +11,7 @@ public class User {
 	private String nickName;
 	private String password;
 	private String userName;	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date regDate;
 
 	public User() {
