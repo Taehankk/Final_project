@@ -22,27 +22,16 @@ public class ProblemServiceImpl implements ProblemService {
 	}
 
 	@Override
-	public List<Problem> getListAll() {
+	public List<Problem> getListAll(String category) {
 		List<Problem> allProblems = new ArrayList<>();
-		
-		allProblems.addAll(problemDao.selectCountry());
-
-		allProblems.addAll(problemDao.selectEtc());
-
-		allProblems.addAll(problemDao.selectExercise());
-
-		allProblems.addAll(problemDao.selectNumber());
-
-		allProblems.addAll(problemDao.selectPerson());
-
+		allProblems.addAll(problemDao.selectCategory(category));
 		return allProblems;
 	}
 
-    @Override
-    public void saveUserData(UserData userData) {
-        problemDao.save(userData);
-    }
-    
+	@Override
+	public void saveUserData(UserData userData) {
+		problemDao.save(userData);
+	}
 
 	@Override
 	public List<UserData> searchList(SearchCondition searchCondition) {

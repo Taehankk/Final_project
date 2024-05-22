@@ -33,9 +33,9 @@ export const useGameStore = defineStore({
       this.hint = "";
       this.timeLeft = 10;
     },
-    async fetchProblems() {
+    async fetchProblems(category) {
       try {
-        const response = await axios.get(`${REST_PROBLEM_API}/list`);
+        const response = await axios.get(`${REST_PROBLEM_API}/list?category=${category}`);
         this.problems = response.data;
       } catch (error) {
         console.error("문제를 불러오는 동안 오류가 발생했습니다:", error);
@@ -63,10 +63,11 @@ export const useGameStore = defineStore({
     updateFinalScore() {
       this.finalScore = this.correctAnswers * 10;
     },
-    async saveResult() {
+    async saveResult(category) {
       try {
         await axios.post(`${REST_PROBLEM_API}/save`, null, {
           params: {
+            category: category,
             nickName: sessionStorage.getItem("user"),
             score: this.finalScore,
           },

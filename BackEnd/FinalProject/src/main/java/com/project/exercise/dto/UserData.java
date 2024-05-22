@@ -8,15 +8,15 @@ public class UserData {
 	private String userId;
 	private String nickName;
 	private String userName;
+	private String category;
 	private int score;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date solveDate;
 
 	public UserData() {
-		
 	}
 
-	public UserData(String userId, String nickName, String userName, int score, Date solveDate) {
+	public UserData(String userId, String nickName, String userName, String category, int score, Date solveDate) {
 		this.userId = userId;
 		this.nickName = nickName;
 		this.userName = userName;
@@ -44,6 +44,14 @@ public class UserData {
 		return userName;
 	}
 
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getCategory() {
+		return userName;
+	}
+	
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}

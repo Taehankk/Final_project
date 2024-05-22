@@ -93,6 +93,7 @@
 
 <script setup>
 import { ref, computed, onMounted, watch, onBeforeUnmount } from "vue";
+import { useRoute } from "vue-router";
 import { useRouter } from "vue-router";
 import { useGameStore } from "@/stores/game";
 
@@ -100,6 +101,7 @@ const store = useGameStore();
 const router = useRouter();
 const userAnswer = ref("");
 const userAnswerInput = ref(null); // 입력 필드를 참조하는 ref
+const route = useRoute();
 
 const currentProblem = computed(() => store.problems[store.currentIndex]);
 const hintCnt = ref(0);
@@ -158,7 +160,7 @@ const closeModalWithoutSaving = () => {
 };
 
 const saveResult = async () => {
-  await store.saveResult();
+  await store.saveResult(route.params.category);
   store.isModalOpen = false;
   router.push({ name: "home" });
 };
@@ -173,7 +175,7 @@ router.afterEach((to) => {
 });
 
 onMounted(() => {
-  store.fetchProblems();
+  store.fetchProblems(route.params.category);
   store.resetGame();
 
   setTimeout(() => {

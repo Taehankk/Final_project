@@ -2,35 +2,35 @@
   <div class="container">
     <div class="title">
       <h1>A R E N A</h1>
-      <br>
       <h2>여러분의 생각을 마음껏 뽐내다.</h2>
-      <br>
       <h3>이곳은 투기장 입니다.</h3>
     </div>
+    <div class="table-container">
+      <router-link :to="`/arena/create`" class="create-btn">Arena 등록</router-link>
+      <table>
+        <thead>
+          <tr>
+            <th>번호</th>
+            <th>경기장</th>
+            <th>주최자</th>
+            <th>관심</th>
+            <th>개최일</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(arena, index) in arenaStore.arenaList" :key="arena.id">
+            <td>{{ index + 1 }}</td>
+            <td>
+              <router-link :to="`/arena/detail/${arena.arenaId}`">{{ arena.field }}</router-link>
+            </td>
+            <td>{{ arena.starter }}</td>
+            <td>{{ arena.interest }}</td>
+            <td>{{ arena.openDay }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <hr />
-    <router-link :to="`/arena/create`" class="create-btn">Arena 등록</router-link>
-    <table>
-      <thead>
-        <tr>
-          <th>번호</th>
-          <th>경기장</th>
-          <th>주최자</th>
-          <th>관심</th>
-          <th>개최일</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(arena, index) in arenaStore.arenaList" :key="arena.id">
-          <td>{{ index + 1 }}</td>
-          <td>
-            <router-link :to="`/arena/detail/${arena.arenaId}`">{{ arena.field }}</router-link>
-          </td>
-          <td>{{ arena.starter }}</td>
-          <td>{{ arena.interest }}</td>
-          <td>{{ arena.openDay }}</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </template>
 
@@ -48,57 +48,57 @@ onMounted(() => {
 <style scoped>
 /* 전체 페이지 컨테이너 스타일 */
 .container {
-  /* 배경 이미지 경로 설정 */
   background-image: url("@/assets/tmp/sentence.jpg");
-  /* 배경 이미지를 화면에 꽉 채우도록 설정 */
   background-size: cover;
-  /* 배경 이미지를 중앙에 정렬 */
   background-position: center;
-  /* 전체 페이지 높이를 최소화하여 내용이 화면에 맞춰 보이도록 설정 */
   min-height: 100vh;
-  /* 내용을 중앙에 정렬 */
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* 위쪽 정렬로 변경 */
   align-items: center;
+  padding: 20px;
+}
+
+/* 테이블 컨테이너 스타일 */
+.table-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 20px;
+  flex-shrink: 0; /* 테이블 컨테이너가 축소되지 않도록 설정 */
 }
 
 /* 헤딩 스타일 */
 .title {
-  margin-top: 20px; /* 제목 위쪽 여백 추가 */
-  margin-bottom: 40px; /* 제목 아래쪽 여백 추가 */
-  text-align: center; /* 가운데 정렬 */
-  color: whitesmoke; /* 텍스트 색상을 밝은색으로 설정 */
+  margin-top: 10px; /* 제목 위쪽 여백 감소 */
+  margin-bottom: 20px; /* 제목 아래쪽 여백 감소 */
+  text-align: center;
+  color: whitesmoke;
   background: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .title h1, h3 {
-  font-size: 40px;
+  font-size: 50px;
 }
 
 .title h2 {
-  font-size: 20px;
+  font-size: 30px;
 }
 
 /* 목록 테이블 스타일 */
 table {
-  width: 100%; /* 테이블의 너비를 100%로 설정 */
-  margin: 20px 0; /* 위쪽과 아래쪽 여백 추가 */
+  width: 100%;
+  margin: 20px 0;
   border-collapse: collapse;
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.8
-  ); /* 테이블의 배경색을 투명도가 있는 백색으로 설정 */
-  border-radius: 8px; /* 테이블에 모서리를 둥글게 설정 */
-  font-size: 16px; /* 글꼴 크기를 늘림 */
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  font-size: 18px;
 }
 
 th,
 td {
   border: 1px solid #eee;
-  padding: 16px; /* 셀 내부 여백을 늘림 */
+  padding: 20px;
   text-align: center;
 }
 
@@ -120,13 +120,15 @@ td a:hover {
 /* 추가 버튼 스타일 */
 .create-btn {
   display: inline-block;
-  padding: 12px 24px; /* 버튼 내부 여백을 조정 */
+  padding: 15px 30px;
   background-color: #28a745;
   color: white;
   text-decoration: none;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   transition: background-color 0.3s ease;
+  font-size: 18px;
+  margin-bottom: 20px;
 }
 
 .create-btn:hover {

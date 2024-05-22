@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,28 +39,27 @@ public class ProblemController {
 		this.userService = userService;
 	}
 
-	// 문제 랜덤 추출
-	@GetMapping("/problem/list")
-	@Operation(summary = "문제 추출", description = "카테고리별로 문제 랜덤 추출")
-	public ResponseEntity<?> listUp() {
+    // 문제 랜덤 추출
+    @GetMapping("/problem/list")
+    @Operation(summary = "문제 추출", description = "카테고리별로 문제 랜덤 추출")
+    public ResponseEntity<?> listUp(@RequestParam("category") String category) {
+        try {
+            list = problemService.getListAll(category);
 
-		try {
-			list = problemService.getListAll();
-			if (list == null || list.isEmpty()) {
-				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-			}
-			return new ResponseEntity<List<Problem>>(list, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<String>("문제 추출 중에 오류가 발생했습니다: " + e.getMessage(),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+            if (list == null || list.isEmpty()) {
+                return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<List<Problem>>(list, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("문제 추출 중에 오류가 발생했습니다: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 	// 문제의 정답 확인
 	@PostMapping("/problem/check")
 	@Operation(summary = "정답 확인", description = "입력받은 정답과 실제 정답 일치 여부 확인")
 	public ResponseEntity<Boolean> checkAnswer(@RequestParam("index") int index, @RequestParam("answer") String answer) {
-		System.out.println(list);
 		try {
 			boolean isCorrect = answer.equals(list.get(index).getProblemAnswer());
 
@@ -103,16 +101,18 @@ public class ProblemController {
     // 최종 결과 저장
     @PostMapping("/problem/save")
     @Operation(summary = "결과 저장", description = "현재까지의 결과를 저장")
-    public ResponseEntity<UserData> save(@RequestParam("nickName") String nickName, @RequestParam("score") int score) {
+    public ResponseEntity<UserData> save(@RequestParam("category") String category, 
+            @RequestParam("nickName") String nickName, @RequestParam("score") int score) {
         try {
             User user = userService.getUser(nickName);
+            System.out.println("userInfo : " + user);
             if (user == null) {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
 
             Date now = new Date();
             UserData savedata = new UserData(user.getUserId(), user.getNickName(), user.getUserName(),
-                    score, now);
+                    category, score, now);
             problemService.saveUserData(savedata);
             return new ResponseEntity<>(savedata, HttpStatus.OK);
         } catch (Exception e) {

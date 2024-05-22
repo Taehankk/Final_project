@@ -18,6 +18,8 @@ public interface ProblemDao {
 	public List<Problem> selectNumber();
 
 	public List<Problem> selectPerson();
+	
+	public List<Problem> selectCategory(String category);
 
 	public void save(UserData userData);
 	

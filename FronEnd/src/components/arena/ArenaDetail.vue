@@ -11,18 +11,17 @@
         <div class="interest"><strong>관심 :</strong> {{ arenaStore.arena.interest }}</div>
         <div class="content"><strong>내용 :</strong> {{ arenaStore.arena.content }}</div>
       </div>
-
       <div class="action-buttons" v-if="userCheck">
         <button @click="deleteArena">삭제</button>
         <button @click="updateArena">수정</button>
       </div>
     </div>
-
     <div class="fight-section">
       <FightList />
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { useArenaStore } from "@/stores/arena";
@@ -56,19 +55,26 @@ onMounted(async () => {
     await arenaStore.updateInterest(route.params.arenaId, 1);
   }
   await arenaStore.getArenaNow(route.params.arenaId);
-  if (loginUser !== arenaStore.arena.starter) {
-    userCheck.value = false;
-  } else {
-    userCheck.value = true;
-  }
+  userCheck.value = loginUser === arenaStore.arena.starter;
 });
 </script>
 
+
 <style scoped>
-/* Title Bar */
+.arena-detail-container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f8f8;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 .title-bar {
   background-color: #414141;
   padding: 15px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .title-bar h2 {
@@ -76,10 +82,10 @@ onMounted(async () => {
   margin: 0;
 }
 
-/* Content Bar */
 .content-bar {
   border: 1px solid #e1e1e1;
   border-top: none;
+  padding: 20px;
 }
 
 .arena-detail {
@@ -94,10 +100,11 @@ onMounted(async () => {
   margin-right: 10px;
 }
 
-/* Action Buttons */
 .action-buttons {
   padding: 20px;
   border-top: 1px solid #e1e1e1;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .action-buttons button {
@@ -106,6 +113,7 @@ onMounted(async () => {
   background-color: #007bff;
   color: #fff;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
 }
 
@@ -113,11 +121,7 @@ onMounted(async () => {
   margin-right: 0;
 }
 
-/* Fight Section */
 .fight-section {
   margin-top: 20px;
 }
-
-/* Fight List Style */
-/* You can add styles for the FightList component here */
 </style>

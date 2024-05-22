@@ -8,7 +8,7 @@ import com.project.exercise.dto.UserData;
 
 public interface ProblemService {
 
-	public List<Problem> getListAll();
+	public List<Problem> getListAll(String category);
 	
 	public void saveUserData(UserData userData);
 	

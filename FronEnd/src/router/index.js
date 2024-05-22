@@ -37,7 +37,7 @@ const router = createRouter({
       component: AdminView,
     },
     {
-      path: "/game",
+      path: "/game/:category",
       name: "game",
       component: GameView,
     },

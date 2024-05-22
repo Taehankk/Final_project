@@ -2,26 +2,40 @@
   <main :class="selectedNation">
     <div class="container">
       <h1>다함께 SHOW SHOW SHOW!</h1>
-      <h3>당신은 풀수 있다 퀴즈를...</h3>
+      <h3>당신은 풀 수 있다 퀴즈를...</h3>
       | <router-link to="/rank" class="nav-link">RANK</router-link> |
       <router-link to="/arena" class="nav-link">ARENA</router-link> |
     </div>
 
     <div class="thumbnails-container">
-      <router-link to="/game" class="thumbnail-link">
-        <div class="thumbnail">
-          <img src="@/assets/tmp/tmp1.jpg" alt="Thumbnail 1">
-          <h2 class="start-heading">START</h2>
-        </div>
-      </router-link>
+      <div v-for="(thumbnail, index) in thumbnails" :key="index">
+        <router-link :to="'/game/' + thumbnail.category" class="thumbnail-link" @click="startQuiz(thumbnail)">
+          <div class="thumbnail">
+            <img :src="thumbnail.image" :alt="thumbnail.alt">
+            <h2 class="start-heading">START</h2>
+          </div>
+        </router-link>
+      </div>
     </div>
   </main>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router'; // Vue Router 추가
 
-const selectedNation = ref(''); // This should be updated based on the nation selected in TheHeaderNav.vue
+const selectedNation = ref('');
+
+const router = useRouter(); // Vue Router 사용
+
+const thumbnails = [
+  { image: '@/assets/tmp/tmp1.jpg', alt: 'Thumbnail 1', category: 'esports' },
+  // 다른 썸네일 정보도 추가할 수 있습니다.
+];
+
+const startQuiz = (thumbnail) => {
+  router.push(`/game/${thumbnail.category}`);
+};
 </script>
 
 <style scoped>
