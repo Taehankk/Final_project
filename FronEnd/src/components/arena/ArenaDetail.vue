@@ -1,23 +1,25 @@
 <template>
   <div class="arena-detail-container">
-    <h2>ARENA DETAIL</h2>
-    <hr />
-    <div class="arena-detail">
-      <div><strong>경기장:</strong> {{ arenaStore.arena.field }}</div>
-      <div><strong>주최자:</strong> {{ arenaStore.arena.starter }}</div>
-      <div><strong>개최일:</strong> {{ arenaStore.arena.openDay }}</div>
-      <div><strong>관심:</strong> {{ arenaStore.arena.interest }}</div>
-      <div><strong>내용:</strong> {{ arenaStore.arena.content }}</div>
+    <div class="title-bar">
+      <h2>ARENA DETAIL</h2>
     </div>
+    <div class="content-bar">
+      <div class="arena-detail">
+        <div class="title"><strong>TITLE :</strong> {{ arenaStore.arena.field }}</div>
+        <div class="boss"><strong>주최자 :</strong> {{ arenaStore.arena.starter }}</div>
+        <div class="regDate"><strong>개최일 :</strong> {{ arenaStore.arena.openDay }}</div>
+        <div class="interest"><strong>관심 :</strong> {{ arenaStore.arena.interest }}</div>
+        <div class="content"><strong>내용 :</strong> {{ arenaStore.arena.content }}</div>
+      </div>
 
-    <div class="action-buttons" v-if="userCheck">
-      <button @click="deleteArena">삭제</button>
-      <button @click="updateArena">수정</button>
+      <div class="action-buttons" v-if="userCheck">
+        <button @click="deleteArena">삭제</button>
+        <button @click="updateArena">수정</button>
+      </div>
     </div>
 
     <div class="fight-section">
-      <h4>FIGHT</h4>
-      <!-- 여기에 경기 정보 표시 -->
+      <FightList />
     </div>
   </div>
 </template>
@@ -26,6 +28,7 @@
 import { useArenaStore } from "@/stores/arena";
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import FightList from "../fight/FightList.vue";
 
 const arenaStore = useArenaStore();
 const route = useRoute();
@@ -62,29 +65,59 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.arena-detail-container {
-  padding: 20px;
+/* Title Bar */
+.title-bar {
+  background-color: #414141;
+  padding: 15px;
+}
+
+.title-bar h2 {
+  color: #fff;
+  margin: 0;
+}
+
+/* Content Bar */
+.content-bar {
+  border: 1px solid #e1e1e1;
+  border-top: none;
 }
 
 .arena-detail {
-  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.arena-detail > div {
+  margin-bottom: 10px;
+}
+
+.arena-detail strong {
+  margin-right: 10px;
+}
+
+/* Action Buttons */
+.action-buttons {
+  padding: 20px;
+  border-top: 1px solid #e1e1e1;
 }
 
 .action-buttons button {
   margin-right: 10px;
-  padding: 8px 16px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 8px 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
   cursor: pointer;
 }
 
-.fight-section {
-  border-top: 1px solid #ccc;
-  padding-top: 20px;
+.action-buttons button:last-child {
+  margin-right: 0;
 }
 
-h4 {
-  margin-top: 0;
+/* Fight Section */
+.fight-section {
+  margin-top: 20px;
 }
+
+/* Fight List Style */
+/* You can add styles for the FightList component here */
 </style>

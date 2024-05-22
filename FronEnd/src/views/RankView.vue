@@ -1,7 +1,9 @@
 <template>
   <div class="ranking-board">
     <div class="search-bar">
-      <h4>사용자 랭킹</h4>
+      <h1>RANKING BOARD</h1>
+      <br>
+      <br>
       <label>정렬 기준 : </label>
       <select v-model="searchInfo.orderSt">
         <option value="score">점수</option>
@@ -25,14 +27,14 @@
       <input
         v-if="searchInfo.searchItem !== 'score'"
         type="text"
-        placeholder="검색어를 입력하세요"
+        placeholder="검색어를 입력하다"
         v-model="searchInfo.searchValue"
         @keyup.enter="searchList"
       />
       <input
         v-if="searchInfo.searchItem === 'score'"
         type="number"
-        placeholder="검색어를 입력하세요"
+        placeholder="검색어를 입력하다"
         v-model="searchInfo.searchValue"
         @keyup.enter="searchList"
       />
@@ -124,37 +126,81 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* RankView.vue */
+
+/* .ranking-board 스타일 수정 */
 .ranking-board {
-  max-width: 800px;
-  margin: 0 auto;
+  margin: 50px auto; /* 수직 가운데 정렬 및 위쪽 여백 추가 */
+  max-width: 90%; /* 전체 너비의 90% 사용 */
+  padding: 20px; /* 내부 여백 추가 */
+  border: 1px solid #ddd; /* 테두리 추가 */
+  border-radius: 10px; /* 테두리 모서리를 둥글게 */
 }
 
+/* 검색 바 스타일 수정 */
 .search-bar {
-  margin-bottom: 20px;
+  margin-bottom: 30px; /* 아래쪽 간격 늘리기 */
+  text-align: center;
 }
 
-table {
+.search-bar label {
+  margin-right: 15px; /* 레이블과 입력 요소 사이 간격 늘리기 */
+}
+
+.search-bar select,
+.search-bar input[type="text"],
+.search-bar input[type="number"],
+.search-bar button {
+  margin: 5px 10px; /* 입력 요소 간격 늘리기 */
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+
+.search-bar button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.search-bar button:hover {
+  background-color: #45a049;
+}
+
+.search-bar button:disabled {
+  background-color: #ddd;
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* 랭킹 테이블 스타일 수정 */
+.ranking-table {
+  margin: 0 auto; /* 수평 가운데 정렬 */
   width: 100%;
   border-collapse: collapse;
 }
 
-th, td {
-  padding: 10px;
+.ranking-table th {
+  background-color: darkkhaki;
+  color: white;
+  padding: 12px;
   text-align: center;
-  border-bottom: 1px solid #ddd;
 }
 
-th {
+.ranking-table td {
+  padding: 8px;
+  text-align: center;
+}
+
+.ranking-table tbody tr:nth-child(even) {
   background-color: #f2f2f2;
-  font-weight: bold;
 }
 
-tr:nth-child(even) {
-  background-color: #f2f2f2;
+.ranking-table tbody tr:hover {
+  background-color: #ddd;
 }
 
-button, input, select {
-  margin-right: 5px;
-  margin-bottom: 5px;
-}
+
 </style>

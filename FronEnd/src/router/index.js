@@ -11,6 +11,7 @@ import ArenaList from "@/components/arena/ArenaList.vue";
 import ArenaDetail from "@/components/arena/ArenaDetail.vue";
 import ArenaCreate from "@/components/arena/ArenaCreate.vue";
 import ArenaUpdate from "@/components/arena/ArenaUpdate.vue";
+import FightList from "@/components/fight/FightList.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -59,6 +60,13 @@ const router = createRouter({
           path: "detail/:arenaId",
           name: "arenaDetail",
           component: ArenaDetail,
+          children: [
+            {
+              path: "",
+              name: "fight",
+              component: FightList,
+            },
+          ],
         },
         {
           path: "create",

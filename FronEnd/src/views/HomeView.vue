@@ -1,9 +1,8 @@
 <template>
-  <main>
+  <main :class="selectedNation">
     <div class="container">
       <h1>다함께 SHOW SHOW SHOW!</h1>
-      <h3>당신은 풀수있습니다 퀴즈를...</h3>
-      <!-- <router-link to="/kakao" class="nav-link">KAKAO</router-link> | -->
+      <h3>당신은 풀수 있다 퀴즈를...</h3>
       | <router-link to="/rank" class="nav-link">RANK</router-link> |
       <router-link to="/arena" class="nav-link">ARENA</router-link> |
     </div>
@@ -19,6 +18,12 @@
   </main>
 </template>
 
+<script setup>
+import { ref } from 'vue';
+
+const selectedNation = ref(''); // This should be updated based on the nation selected in TheHeaderNav.vue
+</script>
+
 <style scoped>
 .container {
   display: flex;
@@ -29,9 +34,34 @@
   color: #fff;
 }
 
+/* 각 국가별 스타일 */
+main.korea {
+  background-color: #c60c30;
+}
+
+main.japan {
+  background-color: #ffffff;
+}
+
+main.china {
+  background-color: #de2910;
+}
+
+main.northkorea {
+  background-color: #024fa2;
+}
+
+main.usa {
+  background-color: #3c3b6e;
+}
+
+main.uk {
+  background-color: #00247d;
+}
+
 .thumbnails-container {
   margin-top: 20px;
-  text-align: center; /* Center the content */
+  text-align: center;
 }
 
 h1 {
@@ -41,7 +71,7 @@ h1 {
 
 h2 {
   font-size: 20px;
-  margin: 10px 0 0; /* Add some margin above the heading */
+  margin: 10px 0 0;
 }
 
 .nav-link {
@@ -56,19 +86,19 @@ h2 {
 }
 
 .thumbnail {
-  display: inline-block; /* Make the thumbnail container occupy only the space required by its content */
+  display: inline-block;
   background-color: aquamarine;
   margin-right: 10px;
   cursor: pointer;
 }
 
 .thumbnail img {
-  width: 200px; /* Set the width of the image */
-  height: auto; /* Maintain aspect ratio */
+  width: 200px;
+  height: auto;
 }
 
 .start-heading {
-  margin-top: 5px; /* Adjust the margin of the title */
+  margin-top: 5px;
 }
 
 .thumbnail-link {

@@ -14,7 +14,6 @@ public class Arena {
 	private String content;
 	
 	public Arena() {
-		
 	}
 
 	public Arena(int arenaId, String field, String starter, int interest, Date openDay, String content) {

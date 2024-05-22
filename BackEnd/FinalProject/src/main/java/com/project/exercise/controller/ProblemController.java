@@ -30,7 +30,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ProblemController {
 	private final ProblemService problemService;
 	private final UserService userService;
-
 	private int correctCount = 0;
 
 	List<Problem> list;

@@ -103,6 +103,7 @@ CREATE TABLE IF NOT EXISTS `project_show`.`users` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
 
+ALTER TABLE `users` ADD CONSTRAINT UNIQUE_nickName UNIQUE (nickName);
 
 -- -----------------------------------------------------
 -- Table `project_show`.`userdata`
@@ -129,15 +130,39 @@ DEFAULT CHARACTER SET = utf8mb3;
 CREATE TABLE IF NOT EXISTS `project_show`.`arenas` (
   `arenaId` INT NOT NULL AUTO_INCREMENT,
   `field` VARCHAR(100) NULL DEFAULT NULL,
-  `starter` VARCHAR(45) NULL DEFAULT NULL,
+  `starter` VARCHAR(45) NOT NULL,
   `interest` INT NOT NULL,
   `openDay` DATETIME NULL DEFAULT NULL,  
   `content` VARCHAR(255) NULL DEFAULT NULL,
-  PRIMARY KEY (`arenaId`))
+  PRIMARY KEY (`arenaId`),
+  CONSTRAINT `starter`
+	FOREIGN KEY (`starter`)
+    REFERENCES `project_show`.`users` (`nickName`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
 
-
+    
+-- -----------------------------------------------------
+-- Table `project_show`.`fights`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `project_show`.`fights` (
+  `fightId` INT NOT NULL AUTO_INCREMENT,
+  `arenaId` INT NOT NULL,  
+  `content` VARCHAR(255) NULL DEFAULT NULL,
+  `fighter` VARCHAR(45) NOT NULL,
+  `fightDay` DATETIME NULL DEFAULT NULL,
+  PRIMARY KEY (`fightId`),
+  CONSTRAINT `fighter`
+	FOREIGN KEY (`fighter`)
+    REFERENCES `project_show`.`users` (`nickName`)
+    ON DELETE CASCADE,
+  CONSTRAINT `arenaId`
+	FOREIGN KEY (`arenaId`)
+    REFERENCES `project_show`.`arenas` (`arenaId`)
+    ON DELETE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
 
 USE `project_show` ;
 

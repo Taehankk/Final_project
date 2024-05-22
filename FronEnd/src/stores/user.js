@@ -28,6 +28,7 @@ export const useUserStore = defineStore("user", () => {
 
   const logout = function () {
     sessionStorage.removeItem("user");
+    sessionStorage.clear();
     user.value = null;
 
     axios.get(`${REST_USER_API}/logout`).then(() => {

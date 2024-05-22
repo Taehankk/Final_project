@@ -19,7 +19,7 @@ export const useGameStore = defineStore({
     isModalOpen: false,
     question,
     hint,
-    timeLeft: 3,
+    timeLeft: 10,
   }),
   actions: {
     resetGame() {
@@ -31,13 +31,11 @@ export const useGameStore = defineStore({
       this.isModalOpen = false;
       this.question = "";
       this.hint = "";
-      this.timeLeft = 12;
+      this.timeLeft = 10;
     },
     async fetchProblems() {
       try {
-        const response = await axios.get(
-          `${REST_PROBLEM_API}/list`
-        );
+        const response = await axios.get(`${REST_PROBLEM_API}/list`);
         this.problems = response.data;
       } catch (error) {
         console.error("문제를 불러오는 동안 오류가 발생했습니다:", error);
@@ -45,9 +43,9 @@ export const useGameStore = defineStore({
     },
     async checkAnswer(userAnswer) {
       try {
-        const response = await axios.post(
-          `${REST_PROBLEM_API}/check`,null, {params:{ index: this.currentIndex, answer: userAnswer }}
-        );
+        const response = await axios.post(`${REST_PROBLEM_API}/check`, null, {
+          params: { index: this.currentIndex, answer: userAnswer },
+        });
         const isCorrect = response.data;
 
         if (isCorrect) {
@@ -67,35 +65,33 @@ export const useGameStore = defineStore({
     },
     async saveResult() {
       try {
-        await axios.post(
-          `${REST_PROBLEM_API}/save`,
-          null,
-          {
-            params: {
-              nickName: sessionStorage.getItem('user'),
-              score: this.finalScore,
-            },
-            withCredentials: true,
-          }
-        );
+        await axios.post(`${REST_PROBLEM_API}/save`, null, {
+          params: {
+            nickName: sessionStorage.getItem("user"),
+            score: this.finalScore,
+          },
+          withCredentials: true,
+        });
         alert("저장 성공!");
       } catch (error) {
         alert("결과 저장 실패했습니다. 뭔가 오류가 있나 봅니다.");
       }
     },
-    async getHint() {
-      const currentProblem = this.problems[this.currentIndex];
-      if (!currentProblem) return;
 
-      try {
-        const response = await axios.post(
+    async getHint(currentIndex) {
+      console.log(currentIndex);
+      console.log(this.problems[currentIndex].problemAnswer);
+      await axios
+        .post(
           "/gpt/v1/chat/completions",
           {
             model: "gpt-3.5-turbo",
             messages: [
               {
                 role: "user",
-                content: `${currentProblem.problemAnswer}가 정답인 퀴즈에 대한 힌트를 한 줄로 알려줘, 정답은 힌트에 들어가면 안 돼`,
+                content:
+                  this.problems[currentIndex].problemAnswer +
+                  "가 정답인 퀴즈에 대한 힌트를 한 줄로 알려줘, 정답은 힌트에 들어가면 안 돼",
               },
             ],
             max_tokens: 100,
@@ -106,19 +102,22 @@ export const useGameStore = defineStore({
               Authorization: `Bearer ${apiKey}`,
             },
           }
-        );
-        this.hint = response.data.choices[0].message.content;
-      } catch (error) {
-        console.error("힌트를 가져오는 동안 오류가 발생했습니다:", error);
-      }
+        )
+        .then((response) => {
+          console.log(response.data.choices[0].message.content);
+          this.hint = response.data.choices[0].message.content;
+        });
     },
+
     nextProblem() {
       this.currentIndex++;
       // console.log(this.currentIndex + " " + this.problems.length + " " + this.isModalOpen);
-      this.timeLeft = 12; // reset timer for the next problem
+      this.timeLeft = 10; // reset timer for the next problem
       if (this.currentIndex >= this.problems.length) {
         this.isModalOpen = true;
       }
+      sessionStorage.removeItem("hintCheck");
+      this.hint="";
     },
   },
 });

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <!-- namespace에 DAO 풀package명 작성 -->
+  <mapper namespace="com.project.exercise.dao.FightDao">
+  	<!-- SQL문 아래 작성 -->
+	<select id="selectFightList" parameterType="int" resultType="Fight">
+		SELECT * FROM fights
+		WHERE arenaId=${arenaId}
+		ORDER BY fightDay ASC
+	</select>
+	
+	<select id="selectFightOne">
+		SELECT * FROM fights
+		WHERE fightId=${fightId}
+	</select>
+	
+	<update id="updateFight" parameterType="Fight" >
+		UPDATE fights
+		SET content=#{content}
+		WHERE fightId=${fightId}
+	</update>
+	
+	<insert id="insertFight" parameterType="Fight">
+		INSERT INTO fights (arenaId, content, fighter, fightDay)
+		VALUES (${arenaId}, #{content}, #{fighter}, now())
+	</insert>
+	
+	<delete id="deleteFight">
+		DELETE FROM fights
+  		WHERE fightId=#{fightId};
+	</delete>
+  </mapper>

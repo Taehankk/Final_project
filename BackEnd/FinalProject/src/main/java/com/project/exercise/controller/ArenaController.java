@@ -33,14 +33,12 @@ public class ArenaController {
 	@GetMapping("/arena/list")
 	public ResponseEntity<List<Arena>> getArenaList(){
 		List<Arena> list = arenaService.getArenaList();
-		
 		return new ResponseEntity<List<Arena>>(list, HttpStatus.OK);
 	}
 	
 	@GetMapping("/arena/detail/{id}")
 	public ResponseEntity<Arena> getArenaNow(@PathVariable("id") int arenaId){
 		Arena arena = arenaService.getArenaNow(arenaId);
-		
 		return new ResponseEntity<Arena>(arena, HttpStatus.OK);
 	}
 	
@@ -53,14 +51,12 @@ public class ArenaController {
 	
 	@DeleteMapping("/arena/delete")
 	public ResponseEntity<Boolean> removeArena(@RequestParam("id") String arenaId){
-		System.out.println(arenaId);
 		arenaService.removeArena(Integer.parseInt(arenaId));
 		return new ResponseEntity<Boolean>(true, HttpStatus.ACCEPTED);
 	}
 	
 	@PutMapping("/arena/update")
 	public ResponseEntity<Boolean> modifyArena(@RequestBody Arena arena){
-		System.out.println(arena);
 		arenaService.modifyArena(arena);
 		return new ResponseEntity<Boolean>(true, HttpStatus.ACCEPTED);
 	}

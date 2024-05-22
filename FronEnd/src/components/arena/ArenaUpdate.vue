@@ -35,9 +35,14 @@ const router = useRouter();
 const arena = ref({});
 
 const updateArena = async () => {
-  await arenaStore.updateArena(arena.value);
-  router.push({ name: "arenaList" });
+  if (arena.value.field === "") {
+    alert("제목을 입력해주세요");
+  } else {
+    await arenaStore.updateArena(arena.value);
+    router.push({ name: "arenaList" });
+  }
 };
+
 
 onMounted(async () => {
   await arenaStore.getArenaNow(route.query.arenaId);
@@ -47,21 +52,54 @@ onMounted(async () => {
 
 <style scoped>
 .arena-update-container {
+  max-width: 600px;
+  margin: 0 auto;
   padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin-bottom: 20px;
+}
+
+fieldset {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+legend {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 label {
   display: inline-block;
   width: 100px;
+  font-weight: bold;
 }
 
 input[type="text"],
 textarea {
-  width: 100%;
+  width: calc(100% - 100px);
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -70,12 +108,16 @@ textarea {
 button {
   padding: 8px 16px;
   font-size: 16px;
-  border: 1px solid aquamarine;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
   background-color: #0056b3;
 }
+
 </style>

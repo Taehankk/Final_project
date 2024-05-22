@@ -31,7 +31,6 @@ public class UserController {
     
     @PostMapping("/user/login")
     public ResponseEntity<String> login(@RequestBody User user){
-        System.out.println(user);
         String nickName = userService.checkUser(user);
         if(nickName != null) {            
             return new ResponseEntity<String>(nickName, HttpStatus.ACCEPTED);
@@ -42,7 +41,6 @@ public class UserController {
     @GetMapping("/user/logout")
     public ResponseEntity<Boolean> logout(HttpSession session){
         session.invalidate();
-        System.out.println("logout");
         return new ResponseEntity<Boolean>(true, HttpStatus.ACCEPTED);
     }
     
@@ -66,7 +64,6 @@ public class UserController {
     @GetMapping("/user/session")
     public ResponseEntity<User> getUser(@RequestParam(value="nickName") String nickName){
         User user = userService.getUser(nickName);
-        
         return new ResponseEntity<User>(user, HttpStatus.ACCEPTED);
     }
 }

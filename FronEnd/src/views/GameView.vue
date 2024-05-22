@@ -1,69 +1,87 @@
 <template>
   <div class="game-container">
-    <template v-if="currentProblem">
-      <h1>
+    <div class="problem-title">
+      <h3 v-if="currentProblem">
         문제 {{ store.currentIndex + 1 }} - {{ currentProblem.problemName }}
-      </h1>
+      </h3>
+    </div>
 
-      <!-- 이미지 표시 부분 -->
+    <!-- 이미지 표시 부분 -->
+    <div class="image-container">
       <img
         :src="currentProblemImageUrl"
         alt="Problem Image"
         v-if="currentProblemImageUrl"
+        class="center-image"
       />
+    </div>
 
-      <!-- Hint Button -->
-      <div class="hint">
-        <button @click="getHint" v-if="hintBool">Hint</button>
-        <div>
-          {{ store.hint }}
-        </div>
-      </div>
+    <div class="answer-input" v-if="!isGameFinished">
+      <input
+        ref="userAnswerInput"
+        :value="userAnswer"
+        type="text"
+        placeholder="정답을 입력하세요"
+        @input="updateUserAnswer"
+        @keyup.enter="checkAnswer"
+      />
+      <button @click="checkAnswer">제출</button>
+    </div>
 
-      <div class="answer-input">
-        <input
-          ref="userAnswerInput"
-          :value="userAnswer"
-          type="text"
-          placeholder="정답을 입력하세요"
-          @input="updateUserAnswer"
-          @keyup.enter="checkAnswer"
-        />
-        <button @click="checkAnswer">제출</button>
-      </div>
-
-      <!-- 현재 문제와 최종 문제 상태 -->
-      <div class="problem-status" v-if="!store.isModalOpen">
-        <p>
-          진행도: {{ store.currentIndex + 1 }} / {{ store.problems.length }}
+    <!-- 현재 문제와 최종 문제 상태 -->
+    <div class="game-status" v-if="!store.isModalOpen">
+      <div class="status-item">
+        <p class="status-label">진행도</p>
+        <p class="status-value">
+          {{ store.currentIndex + 1 }} / {{ store.problems.length }}
         </p>
       </div>
-
-      <!-- 현재 맞힌 갯수와 점수 표시 -->
-      <div class="result-info" v-if="!store.isModalOpen">
-        <p>현재 맞힌 문제 수: {{ store.correctAnswers }}</p>
-        <p>현재 점수: {{ store.finalScore }}</p>
+      <div class="status-item">
+        <p class="status-label">현재 맞힌 문제 수</p>
+        <p class="status-value">{{ store.correctAnswers }}</p>
       </div>
-
-      <!-- 시간과 시간 표시 바 -->
-      <div class="timer" v-if="!store.isModalOpen">
-        <p>남은 시간: {{ store.timeLeft }}초</p>
-        <div class="timebar-container">
-          <transition name="timebar-transition">
-            <div class="timebar" :style="{ width: timeBarWidth }"></div>
-          </transition>
-        </div>
+      <div class="status-item">
+        <p class="status-label">현재 점수</p>
+        <p class="status-value">{{ store.finalScore }}</p>
       </div>
-    </template>
+      <div class="status-item">
+        <p class="status-label">남은 시간</p>
+        <p class="status-value">{{ formattedTimeLeft }}초</p>
+      </div>
+    </div>
 
+    <!-- 시간과 시간 표시 바 -->
+    <div class="timer" v-if="!store.isModalOpen">
+      <p>남은 시간: {{ formattedTimeLeft }}초</p>
+      <div class="timebar-container">
+        <transition name="timebar-transition">
+          <div class="timebar" :style="{ width: timeBarWidth }"></div>
+        </transition>
+      </div>
+    </div>
+
+    <!-- Hint 버튼 -->
+    <button
+      class="hint-button"
+      @click="getHint"
+      v-if="hintBool && !isGameFinished"
+    >
+      Hint {{ store.hint }}
+    </button>
+
+    <!-- 모달 -->
     <div class="modal" v-if="store.isModalOpen">
       <div class="modal-content">
-        <span class="close" @click="closeModal">&times;</span>
-        <h2>게임 결과</h2>
-        <p>맞힌 문제 수: {{ store.correctAnswers }}</p>
-        <p>최종 점수: {{ store.finalScore }}</p>
+        <!-- x 버튼을 클릭했을 때 closeModalWithoutSaving 함수 호출 -->
+        <span class="close" @click="closeModalWithoutSaving">&times;</span>
+        <h2 class="modal-title">게임 결과</h2>
+        <div class="result-details">
+          <p><strong>맞힌 문제 수:</strong> {{ store.correctAnswers }}</p>
+          <p><strong>최종 점수:</strong> {{ store.finalScore }}</p>
+        </div>
         <div class="modal-buttons">
           <button @click="saveResult" class="save-button">결과 저장</button>
+          <!-- 저장하지 않고 종료 버튼을 눌렀을 때 closeModalWithoutSaving 함수 호출 -->
           <button @click="closeModalWithoutSaving" class="close-button">
             저장하지 않고 종료
           </button>
@@ -86,6 +104,7 @@ const userAnswerInput = ref(null); // 입력 필드를 참조하는 ref
 const currentProblem = computed(() => store.problems[store.currentIndex]);
 const hintCnt = ref(0);
 const hintBool = ref(true);
+const isGameFinished = ref(false);
 
 const currentProblemImageUrl = computed(() => {
   if (currentProblem.value && currentProblem.value.image) {
@@ -94,6 +113,10 @@ const currentProblemImageUrl = computed(() => {
 });
 
 const timeBarWidth = computed(() => `${(store.timeLeft / 10) * 100}%`);
+
+const formattedTimeLeft = computed(() => {
+  return store.timeLeft.toFixed(2);
+});
 
 const updateUserAnswer = (event) => {
   userAnswer.value = event.target.value;
@@ -124,7 +147,7 @@ const getHint = async () => {
     if (hintCnt.value >= 2) {
       hintBool.value = false;
     }
-    await store.getHint(currentIndex.value);
+    await store.getHint(store.currentIndex);
     console.log("hint out");
   }
 };
@@ -162,14 +185,14 @@ onMounted(() => {
   const startTimer = () => {
     timer = setInterval(() => {
       if (store.timeLeft > 0) {
-        store.timeLeft--;
+        store.timeLeft -= 0.01;
       } else {
         alert(`시간초과! 정답은 ${currentProblem.value.problemAnswer}입니다.`);
         store.nextProblem();
         userAnswer.value = "";
         userAnswerInput.value.focus();
       }
-    }, 1000);
+    }, 10);
   };
 
   const stopTimer = () => {
@@ -182,6 +205,7 @@ onMounted(() => {
     (newIndex, oldIndex) => {
       if (newIndex !== oldIndex && newIndex === store.problems.length) {
         stopTimer(); // 모든 문제를 푼 경우 타이머를 정지합니다.
+        isGameFinished.value = true;
       }
     }
   );
@@ -191,10 +215,23 @@ onMounted(() => {
   onBeforeUnmount(() => {
     stopTimer(); // 컴포넌트가 소멸될 때 타이머를 정지합니다.
   });
+
+  if (sessionStorage.getItem("hintCheck")) {
+    sessionStorage.removeItem("hintCheck");
+  }
 });
 </script>
 
 <style scoped>
+/* 글로벌 스타일 */
+html,
+body {
+  font-family: Arial, sans-serif; /* 전체 페이지의 기본 폰트 설정 */
+  margin: 0;
+  padding: 0;
+}
+
+/* 게임 컨테이너 스타일 */
 .game-container {
   display: flex;
   flex-direction: column;
@@ -202,37 +239,135 @@ onMounted(() => {
   padding: 20px;
 }
 
-.answer-input {
+/* 문제 제목 스타일 */
+.problem-title {
+  margin-top: 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* 이미지 컨테이너 스타일 */
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  height: 300px;
+  overflow: hidden; /* 이미지를 자르기 위해 필요 */
   margin-top: 20px;
 }
 
-.problem-status,
-.result-info,
+/* 사진 스타일 */
+.center-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지의 가운데를 중심으로 자르기 */
+}
+
+/* 힌트 버튼 스타일 */
+.hint-button {
+  margin-top: 20px; /* timebar 아래 여백 조정 */
+  width: 200px;
+  height: 100px;
+  border-radius: 5px;
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  font-size: 3rem; /* 문자 크기 조정 */
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 사용자 입력 부분 스타일 */
+.answer-input {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center; /* 입력 필드를 가운데로 정렬 */
+  align-items: center;
+}
+
+.answer-input input {
+  padding: 10px;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  width: 300px;
+}
+
+.answer-input button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+/* 현재 문제와 최종 문제 상태 스타일 */
+.game-status {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  border: 2px solid #ccc; /* 겉테두리 실선 추가 */
+  padding: 20px; /* 내부 여백 추가 */
+  border-radius: 10px; /* 둥근 테두리 추가 */
+}
+
+.status-item {
+  text-align: center; /* 내용 가운데 정렬 */
+}
+
+.status-label {
+  font-size: 1.2rem; /* 라벨 폰트 크기 증가 */
+  color: #666;
+}
+
+.status-value {
+  font-size: 1.5rem; /* 값 폰트 크기 증가 */
+  font-weight: bold;
+  color: #333;
+}
+
 .timer {
   margin-top: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+.timer p {
+  font-size: 1.2rem; /* 폰트 크기 증가 */
+  font-weight: bold;
 }
 
 .timebar-container {
   width: 100%;
-  height: 10px;
+  height: 30px;
   background-color: #ddd;
+  margin-top: 10px;
+  position: relative;
 }
 
 .timebar {
   height: 100%;
   background-color: #4caf50;
-}
-
-.timebar-transition-enter-active,
-.timebar-transition-leave-active {
   transition: width 1s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 5px; /* 둥근 테두리 추가 */
 }
 
-.timebar-transition-enter,
-.timebar-transition-leave-to {
-  width: 0;
-}
-
+/* 모달 스타일 */
 .modal {
   position: fixed;
   top: 50%;
@@ -240,27 +375,55 @@ onMounted(() => {
   transform: translate(-50%, -50%);
   background-color: white;
   padding: 20px;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px; /* 둥근 테두리 추가 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
   z-index: 1000;
 }
 
 .modal-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: 400px; /* 모달 너비 조정 */
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #aaa;
+}
+
+.close:hover {
+  color: #666;
+}
+
+.modal-title {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.result-details {
+  margin-bottom: 20px;
+}
+
+.result-details p {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
 }
 
 .modal-buttons {
-  margin-top: 20px;
   display: flex;
-  gap: 10px;
+  justify-content: center;
+  align-items: center;
 }
 
 .save-button,
 .close-button {
   padding: 10px 20px;
+  margin: 0 10px;
+  font-size: 1rem;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
 }
 
@@ -272,5 +435,10 @@ onMounted(() => {
 .close-button {
   background-color: #f44336;
   color: white;
+}
+
+.save-button:hover,
+.close-button:hover {
+  opacity: 0.8; /* 버튼에 호버 효과 추가 */
 }
 </style>
