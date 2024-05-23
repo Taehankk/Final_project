@@ -15,7 +15,6 @@ export const useAdminStore = defineStore("admin", () => {
   };
 
   const deleteUser = function (userId) {
-    console.log(userId);
     axios.delete(`${REST_ADMIN_API}/delete/${userId}`)
       .then(() => {
         alert(userId + " 유저가 삭제되었습니다.");

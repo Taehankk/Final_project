@@ -40,7 +40,6 @@ const arena = ref({
 });
 
 const createArena = async () => {
-  console.log(arena.value.field);
   if (arena.value.field === "") {
     alert("제목을 입력해주세요");
   } else {

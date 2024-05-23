@@ -7,11 +7,14 @@
     </div>
 
     <!-- 이미지 표시 부분 -->
-    <div class="image-container">
+    <div class="image-container" v-if="currentProblemImageUrl">
       <img
         :src="currentProblemImageUrl"
-        alt="Problem Image"
+        alt="사진 오류"
         class="center-image"
+        :width="300"
+        aspect-ratio="1"
+        cover
       />
     </div>
 
@@ -60,14 +63,16 @@
     </div>
 
     <!-- Hint 버튼 -->
-    <button
-      class="hint-button"
-      @click="getHint"
-      v-if="hintBool && !isGameFinished"
-    >
-      <!-- Hint {{ store.hint }} -->
-      Hint {{ kakaoStore.hint }}
-    </button>
+    <div class="hint-section">
+      <button
+        class="hint-button"
+        @click="getHint"
+        v-if="hintBool && !isGameFinished"
+      >
+        Hint 
+      </button>
+      <span class="hint-result">{{ store.hint }}</span>
+    </div>
 
     <!-- 모달 -->
     <div class="modal" v-if="store.isModalOpen">
@@ -112,15 +117,15 @@ const isGameFinished = ref(false);
 const url = ref("");
 
 const currentProblemImageUrl = computed(() => {
-  console.log(currentProblem);
-  console.log(currentProblem.value.problemAnswer);
   if (currentProblem.value && currentProblem.value.problemId) {
-    // 현재 문제 객체에서 problemId가 있는 경우에만 이미지 경로를 구성합니다.
+    // console.log(currentProblem.value.problemAnswer);
     const { category, problemId } = route.params; // category와 problemId 추출
-    url.value = `@/assets/${category}/${problemId}.jpg`; // 이미지 경로를 구성하여 반환합니다.
+    url.value = `/src/assets/${category}/${currentProblem.value.problemId}.jpg`; // 이미지 경로를 구성하여 반환합니다.
+    return url.value;
   }
   return null; // problemId가 없는 경우 null을 반환합니다.
 });
+
 
 const timeBarWidth = computed(() => `${(store.timeLeft / 10) * 100}%`);
 
@@ -153,13 +158,10 @@ const getHint = async () => {
   if (!sessionStorage.getItem("hintCheck")) {
     sessionStorage.setItem("hintCheck", true);
     hintCnt.value++;
-    console.log(hintCnt.value);
     if (hintCnt.value >= 2) {
       hintBool.value = false;
     }
-    // await store.getHint(store.currentIndex);
-    kakaoStore.getHint();
-    console.log("hint out");
+    await store.getHint(store.currentIndex);
   }
 };
 
@@ -248,6 +250,7 @@ body {
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  background-color: rgb(223, 236, 255);
 }
 
 /* 문제 제목 스타일 */
@@ -256,7 +259,9 @@ body {
   font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
+  min-height: 3rem; /* 두 줄 정도의 공간 확보 */
 }
+
 
 /* 이미지 컨테이너 스타일 */
 .image-container {
@@ -270,14 +275,10 @@ body {
   margin-top: 20px;
 }
 
-/* 사진 스타일 */
-.center-image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* 이미지의 가운데를 중심으로 자르기 */
+.hint-section {
+  display: inline-flex;
+  align-items: center;
 }
-
 /* 힌트 버튼 스타일 */
 .hint-button {
   margin-top: 20px; /* timebar 아래 여백 조정 */
@@ -292,6 +293,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.hint-result {
+  font-size: 1rem;
 }
 
 /* 사용자 입력 부분 스타일 */

@@ -2,7 +2,8 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import axios from "axios";
 
-const apiKey = import.meta.env.VITE_GPT_API_KEY;
+// const apiKey = import.meta.env.VITE_GPT_API_KEY;
+const apiKey = import.meta.env.VITE_KAKAO_API_KEY;
 const question = ref("");
 const hint = ref("");
 
@@ -37,7 +38,6 @@ export const useGameStore = defineStore({
       try {
         const response = await axios.get(`${REST_PROBLEM_API}/list?category=${category}`);
         this.problems = response.data;
-        console.log(this.problems);
       } catch (error) {
         console.error("문제를 불러오는 동안 오류가 발생했습니다:", error);
       }
@@ -81,34 +81,55 @@ export const useGameStore = defineStore({
     },
 
     async getHint(currentIndex) {
-      console.log(currentIndex);
-      console.log(this.problems[currentIndex].problemAnswer);
-      await axios
-        .post(
-          "/gpt/v1/chat/completions",
-          {
-            model: "gpt-3.5-turbo",
-            messages: [
-              {
-                role: "user",
-                content:
-                  this.problems[currentIndex].problemAnswer +
-                  "가 정답인 퀴즈에 대한 힌트를 한 줄로 알려줘, 정답은 힌트에 들어가면 안 돼",
-              },
-            ],
-            max_tokens: 100,
+      // await axios
+      //   .post(
+      //     "/gpt/v1/chat/completions",
+      //     {
+      //       model: "gpt-3.5-turbo",
+      //       messages: [
+      //         {
+      //           role: "user",
+      //           content:
+                  // this.problems[currentIndex].problemAnswer +
+                  // "가 정답인 퀴즈에 대한 힌트를 한 줄로 알려줘, 정답은 힌트에 들어가면 안 돼",
+      //         },
+      //       ],
+      //       max_tokens: 100,
+      //     },
+      //     {
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //         Authorization: `Bearer ${apiKey}`,
+      //       },
+      //     }
+      //   )
+      //   .then((response) => {
+      //     console.log(response.data.choices[0].message.content);
+      //     this.hint = response.data.choices[0].message.content;
+      //   });
+
+      axios
+      .post(
+        "/api/v1/inference/kogpt/generation",
+        {
+          prompt: 
+          this.problems[currentIndex].problemAnswer,
+          max_tokens: 100,
+          temperature: 0.01,
+          n: 1,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `KakaoAK ${apiKey}`,
           },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${apiKey}`,
-            },
-          }
-        )
-        .then((response) => {
-          console.log(response.data.choices[0].message.content);
-          this.hint = response.data.choices[0].message.content;
-        });
+        }
+      )
+      .then((response) => {
+        // console.log(response.data.generations[0].text);
+        // this.hint = response.data.generations[0].text.split(".")[1];
+        this.hint = response.data.generations[0].text;
+      });
     },
 
     nextProblem() {

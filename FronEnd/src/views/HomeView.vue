@@ -12,9 +12,9 @@
         <v-row class="thumbnails-row">
           <v-col v-for="(thumbnail, index) in thumbnails" :key="index" cols="3">
             <button class="thumbnail-link" @click="startQuiz(index)">
-              <v-card class="thumbnail" outlined hover max-width="280">
+              <v-card class="thumbnail" outlined hover max-width="300">
                 <v-img
-                  :width="280"
+                  :width="300"
                   :src="thumbnail.image"
                   :alt="thumbnail.alt"
                 ></v-img>
@@ -69,6 +69,7 @@ import esportsImage from "@/assets/thumbnail/esports.jpg";
 import kboImage from "@/assets/thumbnail/kbo.jpg";
 import kleagueImage from "@/assets/thumbnail/kleague.jpg";
 import champsImage from "@/assets/thumbnail/champs.jpg";
+import foreverImage from "@/assets/thumbnail/forever.jpg";
 
 const thumbnails = [
   { image: basicImage, alt: "Basic", category: "basic", title: "종합문제" },
@@ -86,6 +87,12 @@ const thumbnails = [
     title: "K-League",
   },
   { image: champsImage, alt: "CHAMPS", category: "champs", title: "해축" },
+  {
+    image: foreverImage,
+    alt: "forever",
+    category: "forever",
+    title: "4반",
+  }
 ];
 
 const currentIndex = ref(0);
@@ -99,7 +106,6 @@ const startQuiz = (index) => {
 const startGame = () => {
   closeModal(); // 모달 닫기
   router.push(`/game/${thumbnails[currentIndex.value].category}`);
-  console.log(thumbnails[currentIndex.value].category);
 };
 
 

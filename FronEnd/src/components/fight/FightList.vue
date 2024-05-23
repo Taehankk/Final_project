@@ -89,7 +89,7 @@ const arenaStore = useArenaStore();
 const route = useRoute();
 const router = useRouter();
 
-const loginUser = sessionStorage.getItem("user");
+const loginUser = ref(sessionStorage.getItem("user"));
 
 const userCheck = ref([]);
 const updateIng = ref(false);

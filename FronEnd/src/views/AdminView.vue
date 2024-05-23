@@ -27,11 +27,11 @@
   
   const adminStore = useAdminStore();
   const headers = ref([
-    { text: '이름', value: 'userName' },
-    { text: 'ID', value: 'userId' },
-    { text: '닉네임', value: 'nickName' },
-    { text: '가입일', value: 'regDate' },
-    { text: '유저 삭제', value: 'delete', sortable: false }
+    { title: '이름', value: 'userName' },
+    { title: 'ID', value: 'userId' },
+    { title: '닉네임', value: 'nickName' },
+    { title: '가입일', value: 'regDate' },
+    { title: '유저 삭제', value: 'delete', sortable: false }
   ]);
   
   onMounted(() => {

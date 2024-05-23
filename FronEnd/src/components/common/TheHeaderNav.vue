@@ -69,7 +69,6 @@ const getFlagImage = async (nation) => {
 };
 </script>
 
-
 <style scoped>
 /* 전체 컨테이너 스타일 */
 .container {
@@ -95,6 +94,13 @@ const getFlagImage = async (nation) => {
   cursor: pointer;
   margin-left: 10px;
   text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.router-link:hover,
+.router-link-home:hover,
+.button:hover {
+  filter: brightness(1.2); /* 살짝 밝아지는 효과 */
 }
 
 .router-link-home {
@@ -124,6 +130,11 @@ const getFlagImage = async (nation) => {
   max-width: 100%;
   margin: 0 5px;
   cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.nation-img:hover {
+  transform: scale(1.1); /* 이미지가 커지는 효과 */
 }
 
 /* 사용자 컨트롤 스타일 */

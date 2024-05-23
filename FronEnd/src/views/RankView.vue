@@ -45,7 +45,7 @@
 
     <v-card>
       <v-tabs v-model="tab">
-        <v-tab value="basic">EXERCISE-mix</v-tab>
+        <v-tab value="basic">종합부문</v-tab>
         <v-tab value="kbo">KBO</v-tab>
         <v-tab value="kleague">K-LEAGUE</v-tab>
         <v-tab value="champs">해외축구</v-tab>
