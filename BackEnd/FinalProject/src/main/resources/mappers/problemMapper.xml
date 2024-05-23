@@ -59,19 +59,19 @@
  
 	<insert id="save" parameterType="UserData">
 		INSERT INTO userdata (userId,
-		nickName, userName, score, solveDate)
+		nickName, userName, category, score, solveDate)
 		VALUES (#{userId}, #{nickName},
-		#{userName}, #{score}, now())
+		#{userName}, #{category}, #{score}, now())
 	</insert>
 
-	<select id="selectSearchList" parameterType="SearchCondition"
-		resultType="UserData">
-		SELECT * FROM userdata
-		<if test="searchItem != 'none'">
-			WHERE ${searchItem} = #{searchValue}
-		</if>
-		ORDER BY ${orderSt} ${orderByDir};
-	</select>
+    <select id="selectSearchList" parameterType="SearchCondition" resultType="UserData">
+        SELECT * FROM userdata
+        WHERE category = #{category}
+        <if test="searchItem != 'none'">
+         AND ${searchItem} = #{searchValue} AND 
+        </if>
+        ORDER BY ${orderSt} ${orderByDir};
+    </select>
 
 	<select id="selectCategory" parameterType="String"
 		resultType="Problem">

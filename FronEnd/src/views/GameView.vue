@@ -11,7 +11,6 @@
       <img
         :src="currentProblemImageUrl"
         alt="Problem Image"
-        v-if="currentProblemImageUrl"
         class="center-image"
       />
     </div>
@@ -66,7 +65,8 @@
       @click="getHint"
       v-if="hintBool && !isGameFinished"
     >
-      Hint {{ store.hint }}
+      <!-- Hint {{ store.hint }} -->
+      Hint {{ kakaoStore.hint }}
     </button>
 
     <!-- 모달 -->
@@ -96,8 +96,10 @@ import { ref, computed, onMounted, watch, onBeforeUnmount } from "vue";
 import { useRoute } from "vue-router";
 import { useRouter } from "vue-router";
 import { useGameStore } from "@/stores/game";
+import { useKakaoStore } from "@/stores/kakao";
 
 const store = useGameStore();
+const kakaoStore = useKakaoStore();
 const router = useRouter();
 const userAnswer = ref("");
 const userAnswerInput = ref(null); // 입력 필드를 참조하는 ref
@@ -107,11 +109,17 @@ const currentProblem = computed(() => store.problems[store.currentIndex]);
 const hintCnt = ref(0);
 const hintBool = ref(true);
 const isGameFinished = ref(false);
+const url = ref("");
 
 const currentProblemImageUrl = computed(() => {
-  if (currentProblem.value && currentProblem.value.image) {
-    return require(`@/assets/images/${currentProblem.value.image}`);
+  console.log(currentProblem);
+  console.log(currentProblem.value.problemAnswer);
+  if (currentProblem.value && currentProblem.value.problemId) {
+    // 현재 문제 객체에서 problemId가 있는 경우에만 이미지 경로를 구성합니다.
+    const { category, problemId } = route.params; // category와 problemId 추출
+    url.value = `@/assets/${category}/${problemId}.jpg`; // 이미지 경로를 구성하여 반환합니다.
   }
+  return null; // problemId가 없는 경우 null을 반환합니다.
 });
 
 const timeBarWidth = computed(() => `${(store.timeLeft / 10) * 100}%`);
@@ -149,7 +157,8 @@ const getHint = async () => {
     if (hintCnt.value >= 2) {
       hintBool.value = false;
     }
-    await store.getHint(store.currentIndex);
+    // await store.getHint(store.currentIndex);
+    kakaoStore.getHint();
     console.log("hint out");
   }
 };

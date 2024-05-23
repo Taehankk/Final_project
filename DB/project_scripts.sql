@@ -91,6 +91,81 @@ DEFAULT CHARACTER SET = utf8mb3;
 
 
 -- -----------------------------------------------------
+-- Table `project_show`.`basic`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `project_show`.`basic` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `question` VARCHAR(100) NULL DEFAULT NULL,
+  `answer` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 1
+DEFAULT CHARACTER SET = utf8mb3;
+
+-- -----------------------------------------------------
+-- Table `project_show`.`champs`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `project_show`.`champs` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `question` VARCHAR(100) NULL DEFAULT NULL,
+  `answer` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 1
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `project_show`.`esports`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `project_show`.`esports` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `question` VARCHAR(100) NULL DEFAULT NULL,
+  `answer` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 1
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `project_show`.`kbo`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `project_show`.`kbo` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `question` VARCHAR(100) NULL DEFAULT NULL,
+  `answer` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 1
+DEFAULT CHARACTER SET = utf8mb3;
+
+-- -----------------------------------------------------
+-- Table `project_show`.`kleague`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `project_show`.`kleague` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `question` VARCHAR(100) NULL DEFAULT NULL,
+  `answer` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 1
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `project_show`.`forever`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `project_show`.`forever` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `question` VARCHAR(100) NULL DEFAULT NULL,
+  `answer` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 1
+DEFAULT CHARACTER SET = utf8mb3;
+
+-- -----------------------------------------------------
 -- Table `project_show`.`users`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `project_show`.`users` (
@@ -113,6 +188,7 @@ CREATE TABLE IF NOT EXISTS `project_show`.`userdata` (
   `userId` VARCHAR(45) NULL DEFAULT NULL,
   `nickName` VARCHAR(45) NOT NULL,
   `userName` VARCHAR(45) NOT NULL,
+  `category` VARCHAR(45) NOT NULL,
   `score` VARCHAR(45) NULL DEFAULT NULL,
   `solveDate` DATETIME NULL DEFAULT NULL,
   INDEX `nickname_idx` (`userId` ASC) VISIBLE,

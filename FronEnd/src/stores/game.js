@@ -37,6 +37,7 @@ export const useGameStore = defineStore({
       try {
         const response = await axios.get(`${REST_PROBLEM_API}/list?category=${category}`);
         this.problems = response.data;
+        console.log(this.problems);
       } catch (error) {
         console.error("문제를 불러오는 동안 오류가 발생했습니다:", error);
       }

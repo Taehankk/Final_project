@@ -1,28 +1,37 @@
 <template>
-  <div class="login-container">
-    <div>
-  <h1>Login 창</h1>
-  </div>
-    <div class="login-form">
-      <h3>당신은 로그인을 할 수 있습니다.</h3>
-      <fieldset>
-        <div class="form-group">
-          <label for="id">ID</label>
-          <input type="text" id="id" v-model="loginData.userId" @keyup.enter="login"/>
-        </div>
-        <div class="form-group">
-          <label for="password">PW</label>
-          <input type="password" id="password" v-model="loginData.password" @keyup.enter="login"/>
-        </div>
-        <div class="form-group">
-          <button @click="login">Login</button>
-        </div>
-        <div class="form-group">
-          <button @click="redirectToSignup">Sign Up</button>
-        </div>
-      </fieldset>
-    </div>
-  </div>
+  <v-container class="login-container" fluid>
+    <v-row align="center" justify="center">
+      <v-col cols="12" sm="8" md="4">
+        <v-card>
+          <v-card-title>
+            <h1>로그인을 하다.</h1>
+          </v-card-title>
+          <v-card-text>
+            <v-form>
+              <v-text-field
+                v-model="loginData.userId"
+                label="ID"
+                @keyup.enter="login"
+                outlined
+              ></v-text-field>
+              <v-text-field
+                v-model="loginData.password"
+                label="PW"
+                type="password"
+                @keyup.enter="login"
+                outlined
+              ></v-text-field>
+            </v-form>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" @click="login">Login</v-btn>
+            <v-btn text @click="redirectToSignup">Sign Up</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
@@ -49,58 +58,9 @@ const redirectToSignup = function () {
 
 <style scoped>
 .login-container {
+  height: 70vh;
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 100vh;
-  margin-top: 50px; /* Adjusted margin-top */
-}
-
-.login-form {
-  max-width: 300px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-fieldset {
-  border: none;
-}
-
-legend {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-input[type="text"],
-input[type="password"],
-button {
-  width: 100%;
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-button {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
+  justify-content: center;
 }
 </style>

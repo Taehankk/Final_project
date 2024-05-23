@@ -3,7 +3,12 @@
     <v-app id="inspire">
       <div class="comment-section">
         <div class="comment-input-container">
-          <textarea v-model="fightStore.createData.content" ref="createInput" placeholder="댓글을 입력하세요" class="comment-input"></textarea>
+          <textarea
+            v-model="fightStore.createData.content"
+            ref="createInput"
+            placeholder="댓글을 입력하세요"
+            class="comment-input"
+          ></textarea>
           <button @click="createFight" class="submit-button">댓글달기</button>
         </div>
         <div class="table-container">
@@ -19,23 +24,50 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(fight, index) in fightStore.fightList" :key="fight.fightId">
+              <tr
+                v-for="(fight, index) in fightStore.fightList"
+                :key="fight.fightId"
+              >
                 <td>{{ index + 1 }}</td>
                 <td>
-                  <span v-if="fight.fighter !== loginUser || !userCheck[index]">{{ fight.content }}</span>
+                  <span
+                    v-if="fight.fighter !== loginUser || !userCheck[index]"
+                    >{{ fight.content }}</span
+                  >
                   <fieldset v-if="userCheck[index]">
-                    <input ref="updateInput" type="text" v-model="fightStore.fightData.content" @keyup.enter="updateFight(index)" />
-                    <button @click="updateFight(index)" class="complete-button">완료</button>
-                    <button @click="cancelUpdate(index)" class="cancel-button">취소</button>
+                    <input
+                      ref="updateInput"
+                      type="text"
+                      v-model="fightStore.fightData.content"
+                      @keyup.enter="updateFight(index)"
+                    />
+                    <button @click="updateFight(index)" class="complete-button">
+                      완료
+                    </button>
+                    <button @click="cancelUpdate(index)" class="cancel-button">
+                      취소
+                    </button>
                   </fieldset>
                 </td>
                 <td>{{ fight.fighter }}</td>
                 <td>{{ fight.fightDay }}</td>
                 <td>
-                  <button @click="changeTag(index, fight.fightId)" v-if="fight.fighter === loginUser" class="modify-button">수정</button>
+                  <button
+                    @click="changeTag(index, fight.fightId)"
+                    v-if="fight.fighter === loginUser"
+                    class="modify-button"
+                  >
+                    수정
+                  </button>
                 </td>
                 <td>
-                  <button @click="deleteFight(fight.fightId)" v-if="fight.fighter === loginUser" class="delete-button">삭제</button>
+                  <button
+                    @click="deleteFight(fight.fightId)"
+                    v-if="fight.fighter === loginUser"
+                    class="delete-button"
+                  >
+                    삭제
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -50,8 +82,10 @@
 import { onMounted, ref } from "vue";
 import { useFightStore } from "@/stores/fight";
 import { useRoute, useRouter } from "vue-router";
+import { useArenaStore } from "@/stores/arena";
 
 const fightStore = useFightStore();
+const arenaStore = useArenaStore();
 const route = useRoute();
 const router = useRouter();
 
@@ -96,8 +130,10 @@ const createFight = async () => {
   if (fightStore.createData.content === "") {
     alert("댓글을 입력하세요");
   } else {
+    fightStore.createData.arenaId = route.params.arenaId;
     await fightStore.createFight();
     fightStore.createData.content = "";
+    await arenaStore.updateInterest(route.params.arenaId, 3);
     await fightStore.getFightList(route.params.arenaId);
     router.go();
   }
@@ -162,7 +198,8 @@ table {
   background-color: #fff;
 }
 
-th, td {
+th,
+td {
   padding: 10px;
   border: 1px solid #eaeaea;
   text-align: left;

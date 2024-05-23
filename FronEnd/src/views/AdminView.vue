@@ -1,43 +1,63 @@
 <template>
-    <div>
-        <h4>사용자 목록</h4>
-        <hr>
-        <table>
-            <tr>
-                <th>이름</th>
-                <th>ID</th>
-                <th>닉네임</th>
-                <th>가입일</th>
-                <th>유저 삭제</th>
-            </tr>
-            <tr v-for="user in adminStore.userList" :key="user.userId">
-                <td>{{ user.userName }}</td>
-                <td>{{ user.userId }}</td>
-                <td>{{ user.nickName }}</td>
-                <td>{{ user.regDate }}</td>
-                <td>
-                    <button @click="deleteUser(user.userId)">삭제</button>
-                </td>
-            </tr>
-        </table>
-    </div>
-</template>
-
-<script setup>
-import { useAdminStore } from '@/stores/admin';
-import { onMounted } from 'vue';
-
-const adminStore = useAdminStore();
-
-onMounted(() => {
+    <v-container>
+      <v-row>
+        <v-col>
+          <h4>사용자 목록</h4>
+          <v-divider class="my-4"></v-divider>
+          <v-data-table
+            :headers="headers"
+            :items="adminStore.userList"
+            item-key="userId"
+            class="elevation-1"
+          >
+            <template v-slot:[`item.delete`]="{ item }">
+              <v-btn color="red" @click="deleteUser(item.userId)">
+                삭제
+              </v-btn>
+            </template>
+          </v-data-table>
+        </v-col>
+      </v-row>
+    </v-container>
+  </template>
+  
+  <script setup>
+  import { useAdminStore } from '@/stores/admin';
+  import { onMounted, ref } from 'vue';
+  
+  const adminStore = useAdminStore();
+  const headers = ref([
+    { text: '이름', value: 'userName' },
+    { text: 'ID', value: 'userId' },
+    { text: '닉네임', value: 'nickName' },
+    { text: '가입일', value: 'regDate' },
+    { text: '유저 삭제', value: 'delete', sortable: false }
+  ]);
+  
+  onMounted(() => {
     adminStore.getUserList();
-})
-
-const deleteUser = function (userId) {
-    adminStore.deleteUser(userId); 
-}
-</script>
-
-<style scoped>
-
-</style>
+  });
+  
+  const deleteUser = (userId) => {
+    if (confirm('정말로 삭제하시겠습니까?')) {
+      adminStore.deleteUser(userId);
+    }
+  };
+  </script>
+  
+  <style scoped>
+  .v-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .v-data-table {
+    margin-top: 20px;
+  }
+  
+  .v-btn {
+    margin: 0;
+  }
+  </style>
+  

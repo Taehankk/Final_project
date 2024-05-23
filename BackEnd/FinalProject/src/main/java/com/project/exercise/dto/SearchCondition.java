@@ -5,16 +5,18 @@ public class SearchCondition {
 	private String searchValue;
 	private String orderSt;
 	private String orderByDir;
+	private String category;
 	
 	public SearchCondition() {
 
 	}
 	
-	public SearchCondition(String searchItem, String searchValue, String orderSt, String orderByDir) {
+	public SearchCondition(String searchItem, String searchValue, String orderSt, String orderByDir, String category) {
 		this.searchItem = searchItem;
 		this.searchValue = searchValue;
 		this.orderSt = orderSt;
 		this.orderByDir = orderByDir;
+		this.category = category;
 	}
 
 	public String getSearchItem() {
@@ -47,6 +49,14 @@ public class SearchCondition {
 
 	public void setOrderByDir(String orderByDir) {
 		this.orderByDir = orderByDir;
+	}
+	
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	@Override

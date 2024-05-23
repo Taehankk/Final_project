@@ -88,27 +88,34 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach((to, from) => {
-  const user = sessionStorage.getItem("user");
+import { ref } from "vue";
 
-  if (user && (to.name === "login") | (to.name === "regist")) {
-    return { name: "home" };
-  }
+router.beforeEach((to, from, next) => {
+  const user = ref(sessionStorage.getItem("user"));
 
-  if (user !== "admin" && to.name === "admin") {
-    return { name: "home" };
-  }
-
-  if (!user && to.name === "arenaDetail") {
-    return { name: "arenaList" };
-  }
-
-  if (!user && to.name === "game") {
-    return { name: "home" };
-  }
-
-  if (!user && to.name === "createArena") {
-    return { name: "arenaList" };
+  if (user.value && (to.name === "login" || to.name === "regist")) {
+    // 사용자가 로그인 상태이면서 로그인 또는 회원가입 페이지로 이동하려고 할 때
+    alert("이미 로그인되어 있습니다.");
+    next({ name: "home" });
+  } else if (user.value !== "admin" && to.name === "admin") {
+    // 사용자가 관리자가 아닌데 관리자 페이지로 이동하려고 할 때
+    alert("이곳은 관리자만 갈 수 있습니다.");
+    next({ name: "home" });
+  } else if (!user.value && to.name === "fight") {
+    // 사용자가 로그인하지 않은 상태에서 전투 페이지로 이동하려고 할 때
+    alert("로그인 필수로 하다.");
+    next({ name: "arenaList" });
+  } else if (!user.value && to.name === "game") {
+    // 사용자가 로그인하지 않은 상태에서 게임 페이지로 이동하려고 할 때
+    alert("로그인 필수로 하다.");
+    next({ name: "home" });
+  } else if (!user.value && to.name === "createArena") {
+    // 사용자가 로그인하지 않은 상태에서 아레나 생성 페이지로 이동하려고 할 때
+    alert("로그인 필수로 하다.");
+    next({ name: "arenaList" });
+  } else {
+    // 조건에 해당하지 않는 경우 정상적으로 다음 페이지로 이동
+    next();
   }
 });
 

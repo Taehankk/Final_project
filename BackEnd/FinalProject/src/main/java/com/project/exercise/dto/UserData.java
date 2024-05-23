@@ -20,6 +20,7 @@ public class UserData {
 		this.userId = userId;
 		this.nickName = nickName;
 		this.userName = userName;
+		this.category = category;
 		this.score = score;
 		this.solveDate = solveDate;
 	}
@@ -49,7 +50,7 @@ public class UserData {
 	}
 
 	public String getCategory() {
-		return userName;
+		return category;
 	}
 	
 	public void setUserName(String userName) {

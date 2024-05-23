@@ -1,59 +1,86 @@
 <template>
-  <div class="regist-container">
-    <div class="regist-form">
-      <fieldset>
-        <legend>Registration</legend>
-        <div class="form-group">
-          <label for="name">NAME</label>
-          <input type="text" id="name" v-model="registData.userName" />
-        </div>
-        <div class="form-group">
-          <label for="id">ID</label>
-          <input type="text" id="id" v-model="registData.userId" />
-          <button @click="checkId">CHECK</button>
-        </div>
-        <div class="form-group">
-          <label for="password">PW</label>
-          <input
-            type="password"
-            id="password"
-            v-model="registData.password"
-            maxlength="20"
-          />
-          <p v-show="!boolPass">
-            8-20 characters, only !@#$%^&* special characters are allowed
-          </p>
-        </div>
-        <div class="form-group">
-          <label for="nickname">NICKNAME</label>
-          <input type="text" id="nickname" v-model="registData.nickName" />
-          <button @click="checkNick">CHECK</button>
-        </div>
-        <div class="form-group">
-          <button @click="registUser">REGISTER</button>
-        </div>
-      </fieldset>
-    </div>
-  </div>
+  <v-container class="regist-container" fluid>
+    <v-row align="center" justify="center">
+      <v-col cols="12" sm="8" md="6">
+        <v-card>
+          <v-card-title>
+            <h2>Registration</h2>
+          </v-card-title>
+          <v-card-text>
+            <v-form>
+              <v-text-field
+                v-model="registData.userName"
+                label="NAME"
+                outlined
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="registData.userId"
+                label="ID"
+                outlined
+                required
+              >
+                <template v-slot:append>
+                  <v-btn @click="checkId" outlined>CHECK</v-btn>
+                </template>
+              </v-text-field>
+              <v-text-field
+                v-model="registData.password"
+                label="PW"
+                type="password"
+                outlined
+                maxlength="20"
+                required
+              ></v-text-field>
+              <v-alert
+                v-if="!boolPass"
+                type="error"
+                border="left"
+                elevation="2"
+                outlined
+              >
+                8-20 characters, only !@#$%^&* special characters are allowed
+              </v-alert>
+              <v-text-field
+                v-model="registData.nickName"
+                label="NICKNAME"
+                outlined
+                required
+              >
+                <template v-slot:append>
+                  <v-btn @click="checkNick" outlined>CHECK</v-btn>
+                </template>
+              </v-text-field>
+            </v-form>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" @click="registUser">REGISTER</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from "vue";
-import { useUserStore } from "@/stores/user";
-import { useRouter } from "vue-router";
+import { computed, ref, watch, onMounted } from 'vue';
+import { useUserStore } from '@/stores/user';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const userStore = useUserStore();
 const idconf = ref(false);
 const nickconf = ref(false);
 const registData = ref({
-  userName: "",
-  userId: "",
-  password: "",
-  nickName: "",
+  userName: '',
+  userId: '',
+  password: '',
+  nickName: ''
 });
 
 const boolPass = computed(() => userStore.boolPass);
+
 const registUser = function () {
   if (registData.value.userName === "") {
     alert("이름을 입력하다.");
@@ -78,10 +105,10 @@ const registUser = function () {
 };
 
 const checkId = async () => {
-  if (registData.value.userId === "") {
-    alert("입력하다 당신의 아이디를");
+  if (registData.value.userId === '') {
+    alert('왜 아이디 안 적지?');
   } else {
-    await userStore.checkParam("userId", registData.value.userId);
+    await userStore.checkParam('userId', registData.value.userId);
     idconf.value = userStore.duplcheck;
   }
 };
@@ -89,17 +116,15 @@ const checkId = async () => {
 watch(
   () => registData.value.password,
   (newPass) => {
-    if (newPass.length > 20) {
-    }
     userStore.checkPass(newPass);
   }
 );
 
 const checkNick = async () => {
-  if (registData.value.nickName === "") {
-    alert("Enter your nickname");
+  if (registData.value.nickName === '') {
+    alert('NickName 필요');
   } else {
-    await userStore.checkParam("nickname", registData.value.nickName);
+    await userStore.checkParam('nickname', registData.value.nickName);
     nickconf.value = userStore.duplcheck;
   }
 };
@@ -107,71 +132,13 @@ const checkNick = async () => {
 onMounted(() => {
   userStore.initPass();
 });
-
-const redirectToSignup = function () {
-  router.push("/regist"); // Redirect to the registration page
-};
 </script>
 
 <style scoped>
 .regist-container {
+  height: 70vh;
   display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.regist-form {
-  width: 100%; /* Make the form width 100% */
-  max-width: 300px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-fieldset {
-  border: none;
-}
-
-legend {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.form-group {
-  margin-bottom: 20px; /* Increased margin */
-  display: flex;
-  align-items: center;
-}
-
-label {
-  width: 100px; /* Fixed width for labels */
-}
-
-input[type="text"],
-input[type="password"] {
-  flex: 1;
-  padding: 8px;
-  border: 1px solid #ccc; /* Add border */
-  border-radius: 5px;
-}
-
-button {
-  width: 80px; /* Fixed width for buttons */
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid aquamarine;
-  border-radius: 5px;
-  cursor: pointer;
-  background: darkturquoise;
-}
-
-.signup-link {
-  margin-left: 10px; /* Add margin between button and signup link */
-}
-
-button:hover {
-  background-color: #0056b3;
 }
 </style>
