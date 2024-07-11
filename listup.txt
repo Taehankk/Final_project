@@ -1,0 +1,11 @@
+class diagram, user case [ansmoon]
+git server [ansmoon]
+jira [ansmoon]
+db [KTH F]
+figma [KTH F]
+notion [ansmoon]
+github [ansmoon]
+문제 유형 결정 [Common]
+로직 단계 설정
+
+Spring <-> DB <-> Vue

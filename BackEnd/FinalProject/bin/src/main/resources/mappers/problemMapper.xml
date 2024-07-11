@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace에 DAO 풀package명 작성 -->
+<mapper namespace="com.project.exercise.dao.ProblemDao">
+	<!-- SQL문 아래 작성 -->
+	<select id="selectCountry" resultType="Problem">
+		SELECT id AS problemId,
+		question AS problemName, answer AS problemAnswer,
+		'country' AS category
+		FROM country
+		ORDER BY RAND()
+		LIMIT 2;
+	</select>
+
+	<select id="selectEtc" resultType="Problem">
+		SELECT id AS problemId,
+		question AS problemName, answer AS problemAnswer,
+		'etc' AS category
+		FROM etc
+		ORDER BY RAND()
+		LIMIT 2;
+	</select>
+
+	<select id="selectExercise" resultType="Problem">
+		SELECT id AS problemId,
+		question AS problemName, answer AS problemAnswer,
+		'exercise' AS
+		category
+		FROM exercise
+		ORDER BY RAND()
+		LIMIT 2;
+	</select>
+
+	<select id="selectNumber"
+		resultType="com.project.exercise.dto.Problem">
+		SELECT id AS problemId,
+		question AS problemName,
+		CAST(answer AS CHAR) AS problemAnswer,
+		'number' AS category
+		FROM number
+		ORDER BY RAND()
+		LIMIT 2;
+	</select>
+
+	<select id="selectPerson" resultType="Problem">
+		SELECT id AS problemId,
+		question AS problemName, answer AS problemAnswer,
+		'person' AS category
+		FROM person
+		ORDER BY RAND()
+		LIMIT 2;
+	</select>
+
+	<insert id="save" parameterType="UserData">
+		INSERT INTO userdata (userId,
+		nickName, userName, score, solveDate)
+		VALUES (#{userId}, #{nickName},
+		#{userName}, #{score}, now())
+	</insert>
+
+	<select id="selectSearchList" parameterType="SearchCondition"
+		resultType="UserData">
+		SELECT * FROM userdata
+		<if test="searchItem != 'none'">
+			WHERE ${searchItem} = #{searchValue}
+		</if>
+		ORDER BY ${orderSt} ${orderByDir};
+	</select>
+</mapper>
