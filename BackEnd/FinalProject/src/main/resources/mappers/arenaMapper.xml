@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <!-- namespace에 DAO 풀package명 작성 -->
+  <mapper namespace="com.project.exercise.dao.ArenaDao">
+  	<!-- SQL문 아래 작성 -->
+  	<select id="selectAllArena" resultType="Arena">
+  		SELECT * FROM arenas
+  	</select>
+  	
+  	<select id="selectNowArena" parameterType="Integer" resultType="Arena">
+  		SELECT * FROM arenas
+  		WHERE arenaId=#{arenaId}
+  	</select>
+  	
+  	<insert id="insertArena" parameterType="Arena">
+  		INSERT INTO arenas (field, starter, interest, openDay, content)
+  		VALUES (#{field}, #{starter}, 1, now(), #{content})
+	</insert>
+	
+	<delete id="deleteArena" parameterType="Integer">
+		DELETE FROM arenas
+		WHERE arenaId=${arenaId}
+	</delete>
+	
+	<update id="updateArena" parameterType="Arena">
+		UPDATE arenas
+		SET field=#{field}, content=#{content}
+		WHERE arenaId=${arenaId}
+	</update>
+	
+	<update id="updateInterest" parameterType="Map">
+		UPDATE arenas
+		SET interest=interest+${cnt}
+		WHERE arenaId=${arenaId}
+	</update>
+  </mapper>

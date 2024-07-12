@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <!-- namespace에 DAO 풀package명 작성 -->
+  <mapper namespace="com.project.exercise.dao.UserDao">
+  	<!-- SQL문 아래 작성 -->
+  	<select id="selectUser" parameterType="User">
+  		SELECT nickName FROM users
+  		WHERE userId=#{userId} AND password=md5(#{password})
+  	</select>
+  	
+  	<insert id="registUser" parameterType="User">
+  		INSERT INTO users (userId, password, userName, nickName, regDate)
+  		VALUES (#{userId}, md5(#{password}), #{userName}, #{nickName}, now())
+  	</insert>
+  	
+  	<select id="checkUser" parameterType="Map">
+  		SELECT COUNT(*) FROM users
+  		WHERE ${name}=#{value}
+  	</select>
+  	
+  	<select id="selectUserByNick" parameterType="String" resultType="User">
+  		SELECT * FROM users
+  		WHERE nickName=#{nickName}
+  	</select>
+  </mapper>
