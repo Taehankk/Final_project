@@ -1,4 +1,4 @@
-# Final_project - 김태한 기록
+# Final_project - 김태한 회고
 
 # 240516
 
@@ -81,7 +81,7 @@
     - 시간 체크를 확실하게 못 해, 아마 초과된듯...?
     - 발표 전 날은 조금이라도 쉬어야 좀 더 잘 할 수 있을듯ㅠ
 
-# Final_project - 문범수 기록
+# Final_project - 문범수 회고
 
 5월 19일 기본 기능 구현 완료
 이슈 : chatGpt Api 활용, 문제 사진 추가, css 작업, time bar 수정
